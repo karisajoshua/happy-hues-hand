@@ -4,7 +4,7 @@ import safariImg from "@/assets/safari-hero.jpg";
 import { SERVICES } from "@/lib/services";
 import { Reveal } from "@/components/Reveal";
 
-export const Route = createFileRoute("/services")({
+export const Route = createFileRoute("/services/")({
   component: ServicesPage,
   head: () => ({
     meta: [
