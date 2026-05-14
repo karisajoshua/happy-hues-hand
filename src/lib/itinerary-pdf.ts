@@ -259,7 +259,7 @@ export async function generateItineraryPdf(data: ItineraryData) {
     doc.setFontSize(8);
     doc.setTextColor(...NAVY);
     doc.text(
-      `${toRoman(pageNum)} / ${toRoman(totalPages)}`,
+      `— ${toRoman(pageNum)} —`,
       pageW - margin,
       fy + 14,
       { align: "right" },
