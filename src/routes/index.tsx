@@ -240,9 +240,9 @@ function HomePage() {
           ].map(([title, body]) => (
             <div key={title} className="p-8 hover:bg-surface-container-low transition-colors rounded-lg">
               <div className="text-primary text-3xl mb-6">◆</div>
-              <h4 className="font-display text-xl font-semibold text-primary mb-4">
+              <h3 className="font-display text-xl font-semibold text-primary mb-4">
                 {title}
-              </h4>
+              </h3>
               <p className="text-on-surface-variant">{body}</p>
             </div>
           ))}
