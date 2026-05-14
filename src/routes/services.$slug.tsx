@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useState } from "react";
 import { getService, SERVICES } from "@/lib/services";
 import { Reveal } from "@/components/Reveal";
+import { ServiceRequestDialog } from "@/components/ServiceRequestDialog";
 
 export const Route = createFileRoute("/services/$slug")({
   component: ServiceDetailPage,
@@ -39,6 +41,7 @@ export const Route = createFileRoute("/services/$slug")({
 function ServiceDetailPage() {
   const { service } = Route.useLoaderData() as { service: import("@/lib/services").Service };
   const others = SERVICES.filter((s) => s.slug !== service.slug).slice(0, 4);
+  const [requestOpen, setRequestOpen] = useState(false);
 
   return (
     <>
@@ -106,9 +109,13 @@ function ServiceDetailPage() {
                 ))}
               </ul>
               <div className="mt-8 pt-6 border-t border-outline-variant/40 space-y-3">
-                <Link to="/contact" className="btn-primary w-full text-center block">
+                <button
+                  type="button"
+                  onClick={() => setRequestOpen(true)}
+                  className="btn-primary w-full text-center block"
+                >
                   Request This Service
-                </Link>
+                </button>
                 <Link
                   to="/itinerary"
                   className="block w-full text-center px-6 py-3 border border-primary/40 text-primary text-[12px] tracking-[0.1em] uppercase font-semibold hover:bg-primary/5 transition-colors"
