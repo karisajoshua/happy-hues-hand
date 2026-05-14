@@ -292,9 +292,9 @@ function SmallService({
       } relative overflow-hidden`}
     >
       <div className="text-primary mb-4 text-2xl">●</div>
-      <h4 className="font-display text-xl font-semibold text-primary mb-2">
+      <h3 className="font-display text-xl font-semibold text-primary mb-2">
         {title}
-      </h4>
+      </h3>
       <p className="text-on-surface-variant">{body}</p>
     </div>
   );
