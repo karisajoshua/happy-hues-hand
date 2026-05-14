@@ -1,0 +1,12 @@
+# Qafri Tours & Travels
+
+> Bespoke African journeys, curated safaris, and corporate travel logistics with editorial precision.
+
+Qafri Tours & Travels is a luxury travel agency offering bespoke safaris, air ticketing, visa assistance, hotel reservations, and concierge logistics across Africa and beyond.
+
+## Pages
+
+- [Home](/): Overview of services, featured safaris, and inquiry bar.
+- [Safaris](/safaris): Curated luxury safari expeditions including Maasai Mara, Rwanda gorillas, and the Namib desert.
+- [Services](/services): Air ticketing, visa assistance, hotel reservations, MICE, car rentals, and travel insurance.
+- [Contact](/contact): Request a bespoke travel plan from our experts.
