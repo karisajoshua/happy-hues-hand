@@ -30,6 +30,9 @@ export const Route = createFileRoute("/")({
 const HERO_SLIDES = SERVICES.map((s) => ({
   image: s.image,
   title: s.title,
+  short: s.short,
+  long: s.long,
+  slug: s.slug,
   alt: `${s.title} — Qafri Tours & Travels`,
 }));
 
