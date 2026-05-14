@@ -11,15 +11,38 @@ export const Route = createFileRoute("/safaris")({
   component: SafarisPage,
   head: () => ({
     meta: [
-      { title: "Safari Packages — Qafri Tours" },
+      { title: "Safari Packages — Qafri Tours & Travels" },
       {
         name: "description",
         content:
-          "Curated luxury safari expeditions across Africa: Maasai Mara, Rwanda gorillas, the Namib desert and beyond.",
+          "Curated luxury safari expeditions across Africa: Maasai Mara migration, Rwanda gorilla trekking, Namib desert and Okavango Delta journeys.",
+      },
+      { property: "og:title", content: "Safari Packages — Qafri Tours & Travels" },
+      {
+        property: "og:description",
+        content:
+          "Maasai Mara migration, Rwanda gorilla trekking, Namib desert and Okavango Delta — curated luxury safari expeditions.",
       },
       { property: "og:image", content: safariHero },
+      { property: "og:url", content: "https://qafritoursandtravels.africa/safaris" },
     ],
-    links: [{ rel: "canonical", href: "https://happy-hues-hand.lovable.app/safaris" }],
+    links: [{ rel: "canonical", href: "https://qafritoursandtravels.africa/safaris" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          serviceType: "Safari tours and packages",
+          provider: {
+            "@type": "Organization",
+            name: "Qafri Tours & Travels",
+            url: "https://qafritoursandtravels.africa",
+          },
+          areaServed: ["Kenya", "Rwanda", "Namibia", "Botswana", "Tanzania"],
+        }),
+      },
+    ],
   }),
 });
 

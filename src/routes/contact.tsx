@@ -6,14 +6,44 @@ export const Route = createFileRoute("/contact")({
   component: ContactPage,
   head: () => ({
     meta: [
-      { title: "Request a Travel Plan — Qafri Tours" },
+      { title: "Contact — Qafri Tours & Travels, Nairobi" },
       {
         name: "description",
         content:
-          "Submit your bespoke travel inquiry. Our experts curate itineraries with corporate precision and editorial care.",
+          "Reach our Nairobi travel desk to plan safaris, ticketing or visas. Call +254 712 909 770 or email info@qafritoursandtravels.africa.",
+      },
+      { property: "og:title", content: "Contact — Qafri Tours & Travels, Nairobi" },
+      {
+        property: "og:description",
+        content:
+          "Reach our Nairobi travel desk to plan safaris, ticketing or visas. Call +254 712 909 770 or email info@qafritoursandtravels.africa.",
+      },
+      { property: "og:url", content: "https://qafritoursandtravels.africa/contact" },
+    ],
+    links: [{ rel: "canonical", href: "https://qafritoursandtravels.africa/contact" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "TravelAgency",
+          name: "Qafri Tours & Travels",
+          url: "https://qafritoursandtravels.africa",
+          email: "info@qafritoursandtravels.africa",
+          telephone: ["+254712909770", "+254100521498"],
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Nairobi",
+            addressCountry: "KE",
+          },
+          areaServed: "Africa",
+          sameAs: [
+            "https://www.instagram.com/qafri.tours",
+            "https://twitter.com/QafriTours",
+          ],
+        }),
       },
     ],
-    links: [{ rel: "canonical", href: "https://happy-hues-hand.lovable.app/contact" }],
   }),
 });
 

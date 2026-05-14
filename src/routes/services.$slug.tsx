@@ -12,7 +12,7 @@ export const Route = createFileRoute("/services/$slug")({
   head: ({ loaderData }) => {
     const s = loaderData?.service;
     if (!s) return { meta: [{ title: "Service — Qafri Tours" }] };
-    const url = `https://happy-hues-hand.lovable.app/services/${s.slug}`;
+    const url = `https://qafritoursandtravels.africa/services/${s.slug}`;
     return {
       meta: [
         { title: `${s.title} — Qafri Tours & Travels` },

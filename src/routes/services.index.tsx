@@ -8,15 +8,51 @@ export const Route = createFileRoute("/services/")({
   component: ServicesPage,
   head: () => ({
     meta: [
-      { title: "Services — Qafri Tours" },
+      { title: "Travel Services — Qafri Tours & Travels" },
       {
         name: "description",
         content:
-          "Air ticketing, visa assistance, hotel reservations, corporate MICE, car rentals, and bespoke safari planning.",
+          "Air ticketing, visas, passports, insurance, hotel reservations, chauffeur transfers, helicopter charters and corporate MICE — handled end-to-end.",
+      },
+      { property: "og:title", content: "Travel Services — Qafri Tours & Travels" },
+      {
+        property: "og:description",
+        content:
+          "Air ticketing, visas, passports, insurance, hotels, chauffeur transfers, helicopter charters and corporate MICE — handled end-to-end.",
       },
       { property: "og:image", content: servicesHero },
+      { property: "og:url", content: "https://qafritoursandtravels.africa/services" },
     ],
-    links: [{ rel: "canonical", href: "https://happy-hues-hand.lovable.app/services" }],
+    links: [{ rel: "canonical", href: "https://qafritoursandtravels.africa/services" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          serviceType: "Travel agency services",
+          provider: {
+            "@type": "Organization",
+            name: "Qafri Tours & Travels",
+            url: "https://qafritoursandtravels.africa",
+          },
+          areaServed: "Africa",
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Travel services",
+            itemListElement: SERVICES.map((s) => ({
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Service",
+                name: s.title,
+                description: s.short,
+                url: `https://qafritoursandtravels.africa/services/${s.slug}`,
+              },
+            })),
+          },
+        }),
+      },
+    ],
   }),
 });
 
