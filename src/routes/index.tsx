@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useId, cloneElement, isValidElement, type ReactElement } from "react";
-import heroImg from "@/assets/hero-savannah.jpg";
+import { useEffect, useState } from "react";
 import elephantArt from "@/assets/elephant-art.jpg";
 import campNight from "@/assets/camp-night.jpg";
 import { Reveal } from "@/components/Reveal";
@@ -28,20 +27,54 @@ export const Route = createFileRoute("/")({
   }),
 });
 
+const HERO_SLIDES = SERVICES.map((s) => ({
+  image: s.image,
+  title: s.title,
+  alt: `${s.title} — Qafri Tours & Travels`,
+}));
+
 function HomePage() {
+  const [active, setActive] = useState(0);
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (reduced) return;
+    const id = window.setInterval(() => {
+      setActive((i) => (i + 1) % HERO_SLIDES.length);
+    }, 5000);
+    return () => window.clearInterval(id);
+  }, [reduced]);
+
   return (
     <>
-      {/* Hero — no filter */}
+      {/* Hero — service carousel background */}
       <header className="relative w-full h-[640px] md:h-[760px] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img
-            src={heroImg}
-            alt="Luxury safari vehicle on the Serengeti at sunrise"
-            className="w-full h-full object-cover animate-fade-in-soft"
-            width={1920}
-            height={1080}
-            fetchPriority="high"
-          />
+          {HERO_SLIDES.map((slide, i) => (
+            <img
+              key={slide.image}
+              src={slide.image}
+              alt={slide.alt}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-out ${
+                i === active ? "opacity-100" : "opacity-0"
+              }`}
+              width={1920}
+              height={1080}
+              loading={i === 0 ? "eager" : "lazy"}
+              decoding={i === 0 ? "sync" : "async"}
+              fetchPriority={i === 0 ? "high" : "low"}
+            />
+          ))}
+          <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/30 to-transparent" />
         </div>
         <div className="relative z-10 container-max w-full">
           <div className="max-w-3xl glass-panel rounded-xl p-8 md:p-10 cloud-shadow animate-fade-up">
@@ -76,43 +109,37 @@ function HomePage() {
             </div>
           </div>
         </div>
-      </header>
 
-      {/* Inquiry Bar */}
-      <Reveal>
-        <section className="relative z-20 -mt-16 container-max">
-          <div className="bg-secondary-container rounded-lg p-6 md:p-8 cloud-shadow ring-1 ring-black/5 overflow-hidden relative">
-            <form className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end relative z-10">
-              <Field label="Destination">
-                <input
-                  type="text"
-                  placeholder="Where to?"
-                  className="w-full bg-white/60 border-b border-outline-variant focus:border-primary px-3 py-3 italic text-on-surface-variant outline-none"
-                />
-              </Field>
-              <Field label="Travel Dates">
-                <input
-                  type="date"
-                  className="w-full bg-white/60 border-b border-outline-variant focus:border-primary px-3 py-3 text-on-surface-variant outline-none"
-                />
-              </Field>
-              <Field label="Service Type">
-                <select className="w-full bg-white/60 border-b border-outline-variant focus:border-primary px-3 py-3 text-on-surface-variant outline-none">
-                  <option>Air Ticketing</option>
-                  <option>Visa Services</option>
-                  <option>Safari Planning</option>
-                </select>
-              </Field>
-              <button
-                type="button"
-                className="bg-primary-container text-on-primary h-[52px] text-[12px] tracking-[0.1em] uppercase font-semibold hover:bg-primary transition-colors"
-              >
-                Search Availability
-              </button>
-            </form>
+        <div className="absolute bottom-6 right-6 z-10 hidden md:block">
+          <div className="glass-panel rounded-full px-5 py-2.5 cloud-shadow">
+            <span className="text-[10px] tracking-[0.2em] uppercase text-on-surface-variant mr-2">
+              Now showing
+            </span>
+            <span
+              key={active}
+              className="text-[12px] font-semibold text-primary animate-fade-in-soft"
+            >
+              {HERO_SLIDES[active].title}
+            </span>
           </div>
-        </section>
-      </Reveal>
+        </div>
+
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+          {HERO_SLIDES.map((slide, i) => (
+            <button
+              key={slide.image}
+              type="button"
+              aria-label={`Show ${slide.title}`}
+              onClick={() => setActive(i)}
+              className={`h-1.5 rounded-full transition-all ${
+                i === active
+                  ? "w-8 bg-primary"
+                  : "w-1.5 bg-primary/40 hover:bg-primary/60"
+              }`}
+            />
+          ))}
+        </div>
+      </header>
 
       {/* Services Carousel */}
       <section className="py-24 container-max">
@@ -276,23 +303,5 @@ function HomePage() {
         </section>
       </Reveal>
     </>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  const id = useId();
-  const child = isValidElement(children)
-    ? cloneElement(children as ReactElement<{ id?: string }>, { id })
-    : children;
-  return (
-    <div className="space-y-2">
-      <label
-        htmlFor={id}
-        className="text-[10px] uppercase tracking-[0.15em] font-semibold text-on-secondary-container"
-      >
-        {label}
-      </label>
-      {child}
-    </div>
   );
 }
