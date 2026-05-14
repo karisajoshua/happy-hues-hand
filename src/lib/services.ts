@@ -6,6 +6,7 @@ import hotel from "@/assets/services/hotel.jpg";
 import safari from "@/assets/safari-hero.jpg";
 import chauffeur from "@/assets/services/chauffeur.jpg";
 import events from "@/assets/services/events.jpg";
+import helicopter from "@/assets/services/helicopter.jpg";
 
 export type Service = {
   slug: string;
@@ -216,6 +217,31 @@ export const SERVICES: Service[] = [
       { step: "Proposal", detail: "Venues, programme and budget options." },
       { step: "Manage", detail: "Bookings, comms and delegate logistics." },
       { step: "Deliver", detail: "On-site team executing the event." },
+    ],
+  },
+  {
+    slug: "helicopter",
+    title: "Helicopter Services",
+    short: "Private rotor charters & scenic flights.",
+    long: "Private helicopter charters, aerial safaris, and executive transfers across East Africa — from city skylines to the Maasai Mara, Kilimanjaro and the coast.",
+    image: helicopter,
+    included: [
+      "Private executive transfers (city, lodge, airstrip)",
+      "Aerial safaris over the Mara, Amboseli & Naivasha",
+      "Scenic flights along Mount Kenya & Kilimanjaro",
+      "Coastal hops to Diani, Lamu and Zanzibar",
+      "Medical evacuation and emergency standby",
+    ],
+    highlights: [
+      "Twin-engine, IFR-rated fleet with veteran pilots",
+      "Private helipads at premier lodges and hotels",
+      "Bespoke routings with on-board concierge",
+    ],
+    process: [
+      { step: "Mission brief", detail: "Route, passengers, baggage and timing." },
+      { step: "Aircraft match", detail: "Right helicopter for the payload and terrain." },
+      { step: "Clearances", detail: "Permits, landing rights and weather windows secured." },
+      { step: "Fly", detail: "Meet-and-greet, in-flight comfort, smooth handover." },
     ],
   },
 ];

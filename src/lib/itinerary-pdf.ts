@@ -20,9 +20,16 @@ export type ItineraryData = {
   notes: string;
 };
 
-const PRIMARY: [number, number, number] = [12, 35, 64]; // navy
-const ACCENT: [number, number, number] = [201, 168, 76]; // gold-ish
-const MUTED: [number, number, number] = [90, 100, 115];
+// Executive palette
+const NAVY: [number, number, number] = [10, 31, 61];
+const NAVY_DEEP: [number, number, number] = [6, 20, 42];
+const GOLD: [number, number, number] = [184, 146, 74];
+const GOLD_SOFT: [number, number, number] = [212, 184, 130];
+const CREAM: [number, number, number] = [251, 248, 242];
+const CREAM_DEEP: [number, number, number] = [244, 238, 226];
+const INK: [number, number, number] = [28, 32, 40];
+const MUTED: [number, number, number] = [110, 116, 128];
+const HAIRLINE: [number, number, number] = [220, 212, 196];
 
 async function loadLogoDataUrl(): Promise<string> {
   const res = await fetch(logoUrl);
@@ -35,11 +42,31 @@ async function loadLogoDataUrl(): Promise<string> {
   });
 }
 
+function toRoman(num: number): string {
+  const map: [number, string][] = [
+    [10, "X"],
+    [9, "IX"],
+    [5, "V"],
+    [4, "IV"],
+    [1, "I"],
+  ];
+  let n = num;
+  let out = "";
+  for (const [v, s] of map) {
+    while (n >= v) {
+      out += s;
+      n -= v;
+    }
+  }
+  return out;
+}
+
 export async function generateItineraryPdf(data: ItineraryData) {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const margin = 48;
+  const margin = 56;
+  const contentW = pageW - margin * 2;
 
   let logoData: string | null = null;
   try {
@@ -48,199 +75,438 @@ export async function generateItineraryPdf(data: ItineraryData) {
     /* ignore */
   }
 
-  const drawHeader = () => {
-    doc.setFillColor(...PRIMARY);
-    doc.rect(0, 0, pageW, 90, "F");
-    doc.setFillColor(...ACCENT);
-    doc.rect(0, 90, pageW, 4, "F");
+  const today = new Date().toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
+  // ---------- COVER PAGE ----------
+  const drawCover = () => {
+    // Full navy background
+    doc.setFillColor(...NAVY_DEEP);
+    doc.rect(0, 0, pageW, pageH, "F");
+
+    // Gold border frame
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(0.75);
+    doc.rect(28, 28, pageW - 56, pageH - 56);
+    doc.setLineWidth(0.25);
+    doc.rect(34, 34, pageW - 68, pageH - 68);
+
+    // Top wordmark
+    doc.setTextColor(...GOLD_SOFT);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.text("QAFRI TOURS & TRAVELS · NAIROBI", pageW / 2, 70, {
+      align: "center",
+      charSpace: 3,
+    });
+
+    // Logo
     if (logoData) {
       try {
-        doc.addImage(logoData, "PNG", margin, 20, 50, 50);
+        doc.addImage(logoData, "PNG", pageW / 2 - 45, 110, 90, 90);
       } catch {
         /* ignore */
       }
     }
+
+    // Centerpiece title
     doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("Qafri Tours & Travels Ltd.", margin + 64, 42);
+    doc.setFont("times", "normal");
+    doc.setFontSize(40);
+    doc.text("Travel Itinerary", pageW / 2, 260, { align: "center" });
+
+    // Gold ornamental rule
+    drawOrnamentRule(pageW / 2, 285, 90);
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text("Travel Itinerary Summary", margin + 64, 60);
-    doc.setFontSize(9);
-    doc.text("IATA Accredited Agency · Nairobi, Kenya", pageW - margin, 42, {
-      align: "right",
+    doc.setTextColor(...GOLD_SOFT);
+    doc.text("PRIVATELY PREPARED FOR", pageW / 2, 320, {
+      align: "center",
+      charSpace: 4,
     });
+
+    doc.setFont("times", "italic");
+    doc.setFontSize(26);
+    doc.setTextColor(255, 255, 255);
+    doc.text(data.fullName || "Esteemed Guest", pageW / 2, 355, {
+      align: "center",
+    });
+
+    // Trip dates panel
+    const dateY = 420;
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(0.5);
+    doc.line(pageW / 2 - 120, dateY, pageW / 2 - 20, dateY);
+    doc.line(pageW / 2 + 20, dateY, pageW / 2 + 120, dateY);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(...GOLD_SOFT);
+    doc.text("JOURNEY", pageW / 2, dateY - 4, { align: "center", charSpace: 3 });
+
+    doc.setFont("times", "normal");
+    doc.setFontSize(14);
+    doc.setTextColor(255, 255, 255);
     doc.text(
-      new Date().toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }),
+      `${data.startDate || "—"}   to   ${data.endDate || "—"}`,
+      pageW / 2,
+      dateY + 24,
+      { align: "center" },
+    );
+
+    // Bottom seal
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.setTextColor(...GOLD);
+    doc.text("IATA ACCREDITED · LICENSED TRAVEL CONCIERGE", pageW / 2, pageH - 90, {
+      align: "center",
+      charSpace: 3,
+    });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(...GOLD_SOFT);
+    doc.text(`Issued ${today}`, pageW / 2, pageH - 72, { align: "center" });
+
+    doc.setFontSize(7);
+    doc.text(
+      "info@qafritoursandtravels.africa  ·  +254 712 909 770  ·  www.qafritoursandtravels.africa",
+      pageW / 2,
+      pageH - 56,
+      { align: "center" },
+    );
+  };
+
+  const drawOrnamentRule = (cx: number, y: number, width: number) => {
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(0.6);
+    doc.line(cx - width / 2, y, cx - 6, y);
+    doc.line(cx + 6, y, cx + width / 2, y);
+    doc.setFillColor(...GOLD);
+    // diamond
+    const d = 3;
+    doc.triangle(cx, y - d, cx - d, y, cx + d, y, "F");
+    doc.triangle(cx, y + d, cx - d, y, cx + d, y, "F");
+  };
+
+  // ---------- INTERIOR PAGE CHROME ----------
+  const drawInteriorChrome = (pageNum: number) => {
+    // Cream background
+    doc.setFillColor(...CREAM);
+    doc.rect(0, 0, pageW, pageH, "F");
+
+    // Left gold side rule
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(1.2);
+    doc.line(margin - 18, 80, margin - 18, pageH - 80);
+
+    // Header
+    if (logoData) {
+      try {
+        doc.addImage(logoData, "PNG", margin, 36, 26, 26);
+      } catch {
+        /* ignore */
+      }
+    }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(...NAVY);
+    doc.text("QAFRI TOURS & TRAVELS", margin + 34, 50, { charSpace: 2 });
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(...MUTED);
+    doc.text("EXECUTIVE TRAVEL CONCIERGE", margin + 34, 60, { charSpace: 2 });
+
+    doc.setFont("times", "italic");
+    doc.setFontSize(10);
+    doc.setTextColor(...NAVY);
+    doc.text("Travel Itinerary", pageW - margin, 50, { align: "right" });
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(...MUTED);
+    doc.text(
+      (data.fullName || "Guest").toUpperCase(),
       pageW - margin,
-      58,
+      60,
+      { align: "right", charSpace: 2 },
+    );
+
+    // Header gold underline
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(0.4);
+    doc.line(margin, 74, pageW - margin, 74);
+
+    // Footer
+    const fy = pageH - 50;
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(0.4);
+    doc.line(margin, fy, pageW - margin, fy);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(...MUTED);
+    doc.text(
+      "Qafri Tours & Travels Ltd.  ·  Nairobi, Kenya  ·  +254 712 909 770  ·  info@qafritoursandtravels.africa",
+      margin,
+      fy + 14,
+      { charSpace: 0.5 },
+    );
+    doc.setFont("times", "italic");
+    doc.setFontSize(8);
+    doc.setTextColor(...NAVY);
+    doc.text(
+      `— ${toRoman(pageNum)} —`,
+      pageW - margin,
+      fy + 14,
       { align: "right" },
     );
   };
 
-  const drawFooter = (pageNum: number, pageCount: number) => {
-    const y = pageH - 36;
-    doc.setDrawColor(...ACCENT);
-    doc.setLineWidth(0.5);
-    doc.line(margin, y - 8, pageW - margin, y - 8);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(...MUTED);
-    doc.text(
-      "Qafri Tours & Travels Ltd. · Nairobi, Kenya · +254 712 909 770 · info@qafritoursandtravels.africa",
-      pageW / 2,
-      y,
-      { align: "center" },
-    );
-    doc.text(
-      "www.qafritoursandtravels.africa · IATA Accredited Agency",
-      pageW / 2,
-      y + 11,
-      { align: "center" },
-    );
-    doc.text(`Page ${pageNum} / ${pageCount}`, pageW - margin, y + 11, {
-      align: "right",
-    });
+  let y = 0;
+  let interiorPageNum = 0;
+
+  const startInteriorPage = () => {
+    interiorPageNum += 1;
+    drawInteriorChrome(interiorPageNum);
+    y = 110;
   };
 
-  let y = 130;
-
   const ensureSpace = (needed: number) => {
-    if (y + needed > pageH - 70) {
+    if (y + needed > pageH - 80) {
       doc.addPage();
-      drawHeader();
-      y = 130;
+      startInteriorPage();
     }
   };
 
   const sectionTitle = (label: string) => {
-    ensureSpace(40);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(...PRIMARY);
-    doc.text(label.toUpperCase(), margin, y);
-    doc.setDrawColor(...ACCENT);
-    doc.setLineWidth(1);
-    doc.line(margin, y + 4, margin + 40, y + 4);
+    ensureSpace(50);
+    doc.setFont("times", "normal");
+    doc.setFontSize(18);
+    doc.setTextColor(...NAVY);
+    doc.text(label, margin, y);
+    y += 8;
+    drawOrnamentRule(margin + 30, y, 70);
     y += 22;
   };
 
-  const kv = (label: string, value: string) => {
-    ensureSpace(18);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.setTextColor(...MUTED);
-    doc.text(label.toUpperCase(), margin, y);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(30, 30, 30);
-    doc.text(value || "—", margin + 130, y);
-    y += 18;
-  };
-
-  const paragraph = (text: string) => {
+  const paragraph = (text: string, opts?: { italic?: boolean; size?: number }) => {
     if (!text) return;
-    const lines = doc.splitTextToSize(text, pageW - margin * 2);
+    doc.setFont(opts?.italic ? "times" : "helvetica", opts?.italic ? "italic" : "normal");
+    doc.setFontSize(opts?.size ?? 10.5);
+    doc.setTextColor(...INK);
+    const lines = doc.splitTextToSize(text, contentW);
     ensureSpace(lines.length * 14 + 4);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(40, 40, 40);
     doc.text(lines, margin, y);
     y += lines.length * 14 + 4;
   };
 
-  drawHeader();
+  // ============ COVER ============
+  drawCover();
 
-  // Traveler
-  sectionTitle("Traveler Details");
-  kv("Full Name", data.fullName);
-  kv("Email", data.email);
-  kv("Phone", data.phone);
-  kv("Party Size", String(data.partySize));
-  kv(
-    "Travel Dates",
-    `${data.startDate || "—"}  →  ${data.endDate || "—"}`,
+  // ============ PAGE 2: TRAVELER ============
+  doc.addPage();
+  startInteriorPage();
+
+  // Intro letter
+  doc.setFont("times", "italic");
+  doc.setFontSize(11);
+  doc.setTextColor(...MUTED);
+  const intro = doc.splitTextToSize(
+    `Dear ${data.fullName?.split(" ")[0] || "Guest"}, it is our privilege to present the following itinerary, prepared with the discretion and care befitting a journey of distinction.`,
+    contentW,
   );
-  y += 8;
+  doc.text(intro, margin, y);
+  y += intro.length * 14 + 14;
 
-  // Destinations
-  sectionTitle("Destinations");
-  if (data.destinations.length === 0) {
-    paragraph("No destinations specified.");
-  } else {
-    const colX = [margin, margin + 200, margin + 400, pageW - margin];
-    ensureSpace(22);
-    doc.setFillColor(245, 247, 250);
-    doc.rect(margin - 4, y - 12, pageW - margin * 2 + 8, 20, "F");
+  sectionTitle("Traveler Particulars");
+
+  // Framed card
+  const cardX = margin;
+  const cardW = contentW;
+  const rows: [string, string][] = [
+    ["Full Name", data.fullName || "—"],
+    ["Email", data.email || "—"],
+    ["Telephone", data.phone || "—"],
+    ["Party Size", String(data.partySize ?? "—")],
+    ["Departure", data.startDate || "—"],
+    ["Return", data.endDate || "—"],
+  ];
+  const rowH = 26;
+  const cardH = rows.length * rowH + 16;
+  ensureSpace(cardH + 10);
+  doc.setFillColor(...CREAM_DEEP);
+  doc.rect(cardX, y, cardW, cardH, "F");
+  doc.setDrawColor(...GOLD);
+  doc.setLineWidth(0.6);
+  doc.rect(cardX, y, cardW, cardH);
+  // inner
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(...GOLD_SOFT);
+  doc.rect(cardX + 4, y + 4, cardW - 8, cardH - 8);
+
+  let ry = y + 22;
+  rows.forEach((r, i) => {
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.setTextColor(...PRIMARY);
-    doc.text("CITY", colX[0], y);
-    doc.text("COUNTRY", colX[1], y);
-    doc.text("NIGHTS", colX[2], y);
-    y += 18;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(40, 40, 40);
-    data.destinations.forEach((d) => {
-      ensureSpace(18);
-      doc.text(d.city || "—", colX[0], y);
-      doc.text(d.country || "—", colX[1], y);
-      doc.text(String(d.nights || 0), colX[2], y);
-      y += 16;
+    doc.setFontSize(8);
+    doc.setTextColor(...MUTED);
+    doc.text(r[0].toUpperCase(), cardX + 18, ry, { charSpace: 2 });
+    doc.setFont("times", "normal");
+    doc.setFontSize(12);
+    doc.setTextColor(...NAVY);
+    doc.text(r[1], cardX + 160, ry);
+    if (i < rows.length - 1) {
+      doc.setDrawColor(...HAIRLINE);
+      doc.setLineWidth(0.3);
+      doc.line(cardX + 14, ry + 8, cardX + cardW - 14, ry + 8);
+    }
+    ry += rowH;
+  });
+  y += cardH + 24;
+
+  // ============ DESTINATIONS ============
+  sectionTitle("Destinations");
+
+  if (data.destinations.length === 0) {
+    paragraph("No destinations specified.", { italic: true });
+  } else {
+    data.destinations.forEach((d, i) => {
+      const blockH = 56;
+      ensureSpace(blockH + 10);
+      // Navy header strip
+      doc.setFillColor(...NAVY);
+      doc.rect(margin, y, contentW, 22, "F");
+      doc.setFillColor(...GOLD);
+      doc.rect(margin, y, 4, 22, "F");
+      doc.setFont("times", "normal");
+      doc.setFontSize(13);
+      doc.setTextColor(255, 255, 255);
+      doc.text(`${String(i + 1).padStart(2, "0")}.  ${d.city || "—"}`, margin + 14, y + 15);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(...GOLD_SOFT);
+      doc.text(`${d.nights || 0} NIGHT${(d.nights || 0) === 1 ? "" : "S"}`, pageW - margin - 8, y + 15, {
+        align: "right",
+        charSpace: 2,
+      });
+      // Body
+      doc.setFillColor(...CREAM_DEEP);
+      doc.rect(margin, y + 22, contentW, blockH - 22, "F");
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(...MUTED);
+      doc.text("COUNTRY", margin + 14, y + 36, { charSpace: 2 });
+      doc.setFont("times", "italic");
+      doc.setFontSize(11);
+      doc.setTextColor(...INK);
+      doc.text(d.country || "—", margin + 14, y + 50);
+      y += blockH + 8;
     });
   }
-  y += 8;
+  y += 10;
 
-  // Services
-  sectionTitle("Selected Services");
+  // ============ SERVICES ============
+  sectionTitle("Curated Services");
   if (data.services.length === 0) {
-    paragraph("No services selected.");
+    paragraph("No services selected.", { italic: true });
   } else {
-    data.services.forEach((s) => {
-      ensureSpace(28);
-      doc.setFillColor(...ACCENT);
-      doc.circle(margin + 3, y - 4, 2.5, "F");
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.setTextColor(...PRIMARY);
-      doc.text(s.title, margin + 14, y);
-      y += 13;
+    data.services.forEach((s, i) => {
+      ensureSpace(46);
+      // Number
+      doc.setFont("times", "italic");
+      doc.setFontSize(20);
+      doc.setTextColor(...GOLD);
+      doc.text(String(i + 1).padStart(2, "0"), margin, y + 4);
+      // Title
+      doc.setFont("times", "normal");
+      doc.setFontSize(13);
+      doc.setTextColor(...NAVY);
+      doc.text(s.title, margin + 32, y);
+      // Gold rule
+      doc.setDrawColor(...GOLD);
+      doc.setLineWidth(0.4);
+      doc.line(margin + 32, y + 6, margin + 32 + 40, y + 6);
+      // Description
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      doc.setTextColor(...MUTED);
-      const lines = doc.splitTextToSize(s.short, pageW - margin * 2 - 14);
-      doc.text(lines, margin + 14, y);
-      y += lines.length * 12 + 6;
+      doc.setTextColor(...INK);
+      const lines = doc.splitTextToSize(s.short, contentW - 32);
+      doc.text(lines, margin + 32, y + 22);
+      y += 22 + lines.length * 13 + 12;
     });
   }
   y += 6;
 
-  // Preferences
-  sectionTitle("Preferences");
-  kv("Accommodation", data.accommodation);
+  // ============ PREFERENCES ============
+  sectionTitle("Preferences & Notes");
+
+  const accH = 46;
+  ensureSpace(accH + 6);
+  doc.setFillColor(...CREAM_DEEP);
+  doc.rect(margin, y, contentW, accH, "F");
+  doc.setDrawColor(...GOLD_SOFT);
+  doc.setLineWidth(0.4);
+  doc.rect(margin, y, contentW, accH);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.setTextColor(...MUTED);
+  doc.text("ACCOMMODATION PREFERENCE", margin + 14, y + 18, { charSpace: 2 });
+  doc.setFont("times", "normal");
+  doc.setFontSize(12);
+  doc.setTextColor(...NAVY);
+  doc.text(data.accommodation || "—", margin + 14, y + 36);
+  y += accH + 14;
+
   if (data.notes) {
-    y += 4;
+    ensureSpace(40);
+    // quote bar
+    doc.setFillColor(...GOLD);
+    doc.rect(margin, y, 2, 40, "F");
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setTextColor(...MUTED);
-    ensureSpace(18);
-    doc.text("SPECIAL REQUESTS", margin, y);
-    y += 14;
-    paragraph(data.notes);
+    doc.text("SPECIAL REQUESTS", margin + 14, y + 4, { charSpace: 2 });
+    y += 18;
+    doc.setFont("times", "italic");
+    doc.setFontSize(11);
+    doc.setTextColor(...INK);
+    const lines = doc.splitTextToSize(data.notes, contentW - 14);
+    ensureSpace(lines.length * 14);
+    doc.text(lines, margin + 14, y);
+    y += lines.length * 14 + 8;
   }
 
-  // Footer pass
-  const pageCount = doc.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    drawFooter(i, pageCount);
-  }
+  // ============ CLOSING ============
+  ensureSpace(140);
+  y += 10;
+  drawOrnamentRule(pageW / 2, y, 110);
+  y += 28;
+  doc.setFont("times", "italic");
+  doc.setFontSize(12);
+  doc.setTextColor(...INK);
+  const closing = doc.splitTextToSize(
+    "It would be our honour to refine, expand, or finalise any element of this itinerary at your convenience. Our concierge desk remains at your disposal, day or night.",
+    contentW - 60,
+  );
+  doc.text(closing, pageW / 2, y, { align: "center" });
+  y += closing.length * 14 + 18;
+
+  doc.setFont("times", "italic");
+  doc.setFontSize(13);
+  doc.setTextColor(...NAVY);
+  doc.text("With our warmest regards,", pageW / 2, y, { align: "center" });
+  y += 22;
+  doc.setFont("times", "normal");
+  doc.setFontSize(14);
+  doc.setTextColor(...NAVY);
+  doc.text("The Qafri Concierge Team", pageW / 2, y, { align: "center" });
+  y += 8;
+  drawOrnamentRule(pageW / 2, y + 8, 60);
+
+  // Chrome is drawn at the start of each interior page already.
 
   const last = (data.fullName || "guest").trim().split(/\s+/).pop() || "guest";
   const stamp = new Date().toISOString().slice(0, 10);
