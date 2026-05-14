@@ -305,21 +305,3 @@ function HomePage() {
     </>
   );
 }
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  const id = useId();
-  const child = isValidElement(children)
-    ? cloneElement(children as ReactElement<{ id?: string }>, { id })
-    : children;
-  return (
-    <div className="space-y-2">
-      <label
-        htmlFor={id}
-        className="text-[10px] uppercase tracking-[0.15em] font-semibold text-on-secondary-container"
-      >
-        {label}
-      </label>
-      {child}
-    </div>
-  );
-}
