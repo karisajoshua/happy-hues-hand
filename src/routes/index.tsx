@@ -30,6 +30,7 @@ function HomePage() {
             className="w-full h-full object-cover"
             width={1920}
             height={1080}
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-surface/85 via-surface/30 to-transparent" />
         </div>
