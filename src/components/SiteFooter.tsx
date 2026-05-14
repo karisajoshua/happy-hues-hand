@@ -73,36 +73,36 @@ export function SiteFooter() {
           <h3 className="text-[12px] font-semibold tracking-[0.15em] uppercase text-primary">
             Social
           </h3>
-          <ul className="space-y-3 text-sm text-on-surface-variant">
-            <li>
-              <a
-                href="https://instagram.com/qafri.tours"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-primary transition-colors"
-              >
-                Instagram · @qafri.tours
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://x.com/QafriTours"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-primary transition-colors"
-              >
-                X / Twitter · @QafriTours
-              </a>
-            </li>
-          </ul>
-          <p className="text-xs text-on-surface-variant pt-2 border-t border-outline-variant/30">
+          <div className="flex items-center gap-3">
+            <SocialIcon
+              href="https://instagram.com/qafri.tours"
+              label="Instagram · @qafri.tours"
+              Icon={Instagram}
+            />
+            <SocialIcon
+              href="https://x.com/QafriTours"
+              label="X / Twitter · @QafriTours"
+              Icon={Twitter}
+            />
+            <SocialIcon
+              href="mailto:info@qafritoursandtravels.africa"
+              label="Email us"
+              Icon={Mail}
+            />
+            <SocialIcon
+              href="tel:+254712909770"
+              label="Call us"
+              Icon={Phone}
+            />
+          </div>
+          <p className="text-xs text-on-surface-variant pt-4 border-t border-outline-variant/30">
             Fully compliant with all applicable travel industry regulations.
           </p>
         </div>
       </div>
       <div className="container-max border-t border-outline-variant/20 py-6 flex flex-col md:flex-row justify-between items-center gap-2">
         <p className="text-[10px] tracking-[0.15em] uppercase text-on-surface-variant">
-          © 2024 Qafri Tours & Travels Ltd. All rights reserved.
+          © 2026 Qafri Tours & Travels Ltd. All rights reserved.
         </p>
         <p className="text-[10px] tracking-[0.15em] uppercase text-on-surface-variant">
           Crafted for the global explorer
