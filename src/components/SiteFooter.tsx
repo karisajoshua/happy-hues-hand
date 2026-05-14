@@ -1,20 +1,18 @@
 import { Link } from "@tanstack/react-router";
+import logo from "@/assets/qafri-logo.png";
 
 export function SiteFooter() {
   return (
     <footer className="bg-surface-container-low border-t border-outline-variant/30 mt-24">
       <div className="container-max py-16 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="space-y-6">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-sm bg-primary flex items-center justify-center text-on-primary font-display font-bold text-lg">
-              Q
-            </div>
-            <div className="leading-tight">
-              <div className="font-display text-lg font-bold text-primary">
-                Qafri Tours
-              </div>
-            </div>
-          </div>
+          <img
+            src={logo}
+            alt="Qafri Tours & Travels"
+            className="h-14 w-auto"
+            width={280}
+            height={112}
+          />
           <p className="text-on-surface-variant max-w-xs text-sm">
             Elevating the standards of global exploration through corporate
             precision and an artistic soul.
