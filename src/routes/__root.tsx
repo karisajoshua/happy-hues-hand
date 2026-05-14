@@ -131,7 +131,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <SiteNav />
+      <main className="min-h-screen">
+        <Outlet />
+      </main>
+      <SiteFooter />
+      <WhatsAppButton />
     </QueryClientProvider>
   );
 }
