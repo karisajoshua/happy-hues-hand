@@ -211,9 +211,9 @@ function HomePage() {
                     <span className="w-2 h-2 rounded-full bg-primary" />
                   </div>
                   <div>
-                    <h5 className="font-display text-xl font-semibold text-on-surface mb-1">
+                    <h3 className="font-display text-xl font-semibold text-on-surface mb-1">
                       {title}
-                    </h5>
+                    </h3>
                     <p className="text-on-surface-variant">{body}</p>
                   </div>
                 </div>
