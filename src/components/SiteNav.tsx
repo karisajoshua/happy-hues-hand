@@ -13,6 +13,12 @@ const links = [
 
 export function SiteNav() {
   const [openMega, setOpenMega] = useState(false);
+  const location = useLocation();
+
+  // Close mega menu on route change
+  useEffect(() => {
+    setOpenMega(false);
+  }, [location.pathname]);
 
   return (
     <nav
