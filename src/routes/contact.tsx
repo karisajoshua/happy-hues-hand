@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useId, useState, cloneElement, isValidElement, type ReactElement } from "react";
 import heroImg from "@/assets/hero-savannah.jpg";
 
 export const Route = createFileRoute("/contact")({
@@ -13,6 +13,7 @@ export const Route = createFileRoute("/contact")({
           "Submit your bespoke travel inquiry. Our experts curate itineraries with corporate precision and editorial care.",
       },
     ],
+    links: [{ rel: "canonical", href: "https://happy-hues-hand.lovable.app/contact" }],
   }),
 });
 
