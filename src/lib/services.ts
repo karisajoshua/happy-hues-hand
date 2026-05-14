@@ -6,6 +6,7 @@ import hotel from "@/assets/services/hotel.jpg";
 import safari from "@/assets/safari-hero.jpg";
 import chauffeur from "@/assets/services/chauffeur.jpg";
 import events from "@/assets/services/events.jpg";
+import helicopter from "@/assets/services/helicopter.jpg";
 
 export type Service = {
   slug: string;
