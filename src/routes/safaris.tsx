@@ -19,6 +19,7 @@ export const Route = createFileRoute("/safaris")({
       },
       { property: "og:image", content: safariHero },
     ],
+    links: [{ rel: "canonical", href: "https://happy-hues-hand.lovable.app/safaris" }],
   }),
 });
 
