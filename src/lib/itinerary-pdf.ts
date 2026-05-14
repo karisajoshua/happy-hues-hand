@@ -267,9 +267,11 @@ export async function generateItineraryPdf(data: ItineraryData) {
   };
 
   let y = 0;
+  let interiorPageNum = 0;
 
   const startInteriorPage = () => {
-    // chrome drawn at the end with correct page count
+    interiorPageNum += 1;
+    drawInteriorChrome(interiorPageNum);
     y = 110;
   };
 
