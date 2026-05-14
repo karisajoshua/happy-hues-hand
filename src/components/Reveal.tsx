@@ -4,10 +4,9 @@ type Props = {
   children: ReactNode;
   className?: string;
   delay?: number;
-  as?: "div" | "section" | "article" | "header" | "footer";
 };
 
-export function Reveal({ children, className = "", delay = 0, as: Tag = "div" }: Props) {
+export function Reveal({ children, className = "", delay = 0 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -34,13 +33,12 @@ export function Reveal({ children, className = "", delay = 0, as: Tag = "div" }:
   }, []);
 
   return (
-    <Tag
-      // @ts-expect-error - dynamic tag ref typing
+    <div
       ref={ref}
       className={`reveal ${visible ? "is-visible" : ""} ${className}`}
       style={delay ? { animationDelay: `${delay}ms` } : undefined}
     >
       {children}
-    </Tag>
+    </div>
   );
 }
