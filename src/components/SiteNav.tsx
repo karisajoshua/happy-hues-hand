@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import logo from "@/assets/qafri-logo.png";
 
 const links = [
   { to: "/", label: "Home" },
@@ -11,18 +12,14 @@ export function SiteNav() {
   return (
     <nav className="sticky top-0 z-50 w-full glass-panel border-b border-outline-variant/30 shadow-[0_20px_50px_rgba(0,52,109,0.06)]">
       <div className="container-max flex justify-between items-center py-4">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-sm bg-primary flex items-center justify-center text-on-primary font-display font-bold text-lg">
-            Q
-          </div>
-          <div className="leading-tight">
-            <div className="font-display text-lg font-bold text-primary tracking-tight">
-              Qafri Tours
-            </div>
-            <div className="text-[10px] tracking-[0.2em] uppercase text-on-surface-variant">
-              & Travels
-            </div>
-          </div>
+        <Link to="/" className="flex items-center" aria-label="Qafri Tours & Travels">
+          <img
+            src={logo}
+            alt="Qafri Tours & Travels"
+            className="h-12 w-auto"
+            width={240}
+            height={96}
+          />
         </Link>
         <div className="hidden md:flex items-center gap-8">
           {links.map((l) => (
