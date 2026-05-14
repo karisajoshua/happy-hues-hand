@@ -20,10 +20,17 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "IATA-accredited travel agency in Nairobi. Passport, visa, insurance, air ticketing, hotel booking, safaris and bespoke logistics across Africa.",
+          "IATA-accredited Nairobi travel agency. Bespoke safaris, air ticketing, visas, passports, insurance, hotels and corporate logistics across Africa.",
       },
+      { property: "og:title", content: "Qafri Tours & Travels — Bespoke African Journeys" },
+      {
+        property: "og:description",
+        content:
+          "IATA-accredited Nairobi travel agency. Bespoke safaris, air ticketing, visas, passports, insurance, hotels and corporate logistics across Africa.",
+      },
+      { property: "og:url", content: "https://qafritoursandtravels.africa/" },
     ],
-    links: [{ rel: "canonical", href: "https://happy-hues-hand.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://qafritoursandtravels.africa/" }],
   }),
 });
 

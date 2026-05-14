@@ -25,7 +25,7 @@ export const Route = createFileRoute("/itinerary")({
       },
     ],
     links: [
-      { rel: "canonical", href: "https://happy-hues-hand.lovable.app/itinerary" },
+      { rel: "canonical", href: "https://qafritoursandtravels.africa/itinerary" },
     ],
   }),
 });
