@@ -506,15 +506,7 @@ export async function generateItineraryPdf(data: ItineraryData) {
   y += 8;
   drawOrnamentRule(pageW / 2, y + 8, 60);
 
-  // ============ DRAW CHROME ON ALL INTERIOR PAGES ============
-  const totalPages = doc.getNumberOfPages();
-  for (let i = 2; i <= totalPages; i++) {
-    doc.setPage(i);
-    // Re-render chrome behind existing content: jsPDF draws on top, so we
-    // need a second pass: insert chrome by drawing rect first won't work
-    // post-hoc. Instead, we draw chrome elements that sit at the edges only.
-    drawInteriorChrome(i - 1, totalPages - 1);
-  }
+  // Chrome is drawn at the start of each interior page already.
 
   const last = (data.fullName || "guest").trim().split(/\s+/).pop() || "guest";
   const stamp = new Date().toISOString().slice(0, 10);
