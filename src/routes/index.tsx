@@ -14,6 +14,7 @@ export const Route = createFileRoute("/")({
           "Corporate-editorial luxury travel agency. Bespoke safaris, air ticketing, visas, and concierge logistics across Africa.",
       },
     ],
+    links: [{ rel: "canonical", href: "https://happy-hues-hand.lovable.app/" }],
   }),
 });
 
