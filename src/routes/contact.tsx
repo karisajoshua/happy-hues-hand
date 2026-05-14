@@ -233,12 +233,19 @@ function Field({
   label: string;
   children: React.ReactNode;
 }) {
+  const id = useId();
+  const child = isValidElement(children)
+    ? cloneElement(children as ReactElement<{ id?: string }>, { id })
+    : children;
   return (
     <div>
-      <label className="block text-[12px] tracking-[0.1em] uppercase font-semibold text-on-surface mb-2">
+      <label
+        htmlFor={id}
+        className="block text-[12px] tracking-[0.1em] uppercase font-semibold text-on-surface mb-2"
+      >
         {label}
       </label>
-      {children}
+      {child}
     </div>
   );
 }
