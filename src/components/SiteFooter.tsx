@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Instagram, Twitter, Mail, Phone } from "lucide-react";
 import logo from "@/assets/qafri-logo.png";
 
 export function SiteFooter() {
