@@ -1,68 +1,69 @@
-## Plan
+# Plan: Service Detail Pages + Itinerary Builder with PDF
 
-### 1. Hero section (home)
-- Remove the dark gradient overlay on `src/routes/index.tsx` hero so the image displays unfiltered.
-- Adjust headline/text contrast (add subtle text-shadow or move to a side panel) so copy stays legible without the filter.
+## 1. Per-service detail pages
 
-### 2. Services carousel (home)
-Replace the existing "Strategic Travel Logistics" grid section with a horizontal carousel using the existing `src/components/ui/carousel.tsx` (Embla). Each slide = one service card with image, title, short copy, and link to `/services` or `/contact`.
+Create a dynamic route `src/routes/services.$slug.tsx` that renders a full page for each service in `src/lib/services.ts`.
 
-Service order (as specified):
-1. Passport Services
-2. Visa Services
-3. Travel Insurance
-4. Air Ticketing
-5. Hotel Booking
-6. Safari & Holiday Packages
-7. Chauffeur & Transfers
-8. Events & MICE / Travel Consultancy
+- Lookup service by `slug`; if not found, show a `notFoundComponent`.
+- Layout: hero image, title, long description, "What's included" bullets, FAQ-style highlights, CTA ("Request this service" → `/contact?service=slug`, "Build an Itinerary" → `/itinerary`).
+- Per-route SEO: unique `head()` with title, description, og:title/description/image (the service image).
+- Update `src/lib/services.ts` to add structured fields: `included: string[]`, `highlights: string[]`, `process: { step: string; detail: string }[]`.
+- Update all "card" links currently pointing at `/services` to point at `/services/$slug` with `params={{ slug }}`:
+  - `src/components/SiteNav.tsx` mega menu items
+  - `src/routes/services.tsx` service cards
+  - Home carousel cards in `src/routes/index.tsx`
+- Add an "All services" breadcrumb back to `/services`.
+- Add JSON-LD `Service` schema in head meta.
 
-Will generate ~6 new editorial images in `src/assets/services/` for the services that don't already have art (passport, visa, insurance, ticketing, hotel, transfers).
+## 2. Itinerary builder
 
-### 3. Mega menu in navbar
-Update `src/components/SiteNav.tsx`:
-- Convert the "Services" nav item into a hover-triggered mega menu panel.
-- Panel shows a 3- or 4-column grid: each column = a service with thumbnail image, title, one-line description, link.
-- Glass panel styling consistent with current `glass-panel` token.
-- Mobile: collapses into stacked list inside a sheet/drawer.
+New route `src/routes/itinerary.tsx` — a multi-step form to assemble a trip summary.
 
-### 4. Update organization contacts
-Update `src/routes/contact.tsx` and `src/components/SiteFooter.tsx`:
-- Company: Qafri Tours & Travels Ltd.
-- HQ: Nairobi, Kenya
-- Website: www.qafritoursandtravels.africa
-- Phone: +254 712 909 770 / +254 100 521 498
-- Email: info@qafritoursandtravels.africa
-- Socials: @qafri.tours (Instagram), @QafriTours (X/Twitter)
-- Accreditation: IATA Accredited Agency
-- Add a regulatory compliance line in footer.
-- Update WhatsApp button number in `src/components/WhatsAppButton.tsx` to +254712909770.
+Form sections (single page, sectioned, no backend persistence — pure client state via `useState`):
+- Traveler info: name, email, phone, party size, travel dates (start/end).
+- Destinations: add multiple {country, city, nights}.
+- Services selected: checkbox list pulled from `SERVICES` (passport, visa, insurance, air ticketing, hotel, safari, chauffeur, events).
+- Accommodation preference: budget / mid-range / luxury (radio).
+- Special requests: textarea.
+- Two actions:
+  1. **Download PDF** — generates branded PDF locally.
+  2. **Send to Qafri** — opens `mailto:info@qafritoursandtravels.africa` with summary in body (no backend needed).
 
-### 5. Global smooth entrance animations
-- Add `fade-in-up` keyframe + utility in `src/styles.css`.
-- Create a small `<Reveal>` wrapper component using IntersectionObserver that adds the animation class when element enters viewport.
-- Apply `animate-fade-in` to hero content on mount (immediate).
-- Wrap major sections on Home, Safaris, Services, Contact in `<Reveal>` for on-scroll entrance.
-- Respect `prefers-reduced-motion`.
+Add nav entry "Plan Trip" linking to `/itinerary` in `SiteNav.tsx` and CTA buttons on home/safaris pages.
 
-### 6. Refresh "Curated Safari & Holiday Experiences" images
-- Regenerate `src/assets/elephant-art.jpg` and `src/assets/camp-night.jpg` (or new files) with higher-quality editorial-style imagery: warm-light elephant portrait at golden hour, and a luxury tented camp lit at twilight with fire glow.
-- Use premium image generation tier for these two hero composition images.
+## 3. Branded PDF generation
 
-### Technical notes
-- No backend changes; all frontend.
-- Carousel uses existing embla dependency (already in `ui/carousel.tsx`).
-- Mega menu implemented with Tailwind (group-hover) — no new lib.
-- Reveal component is ~30 lines, uses `IntersectionObserver`, no deps.
-- New image assets generated via imagegen tool, stored under `src/assets/`.
-- All colors via existing semantic tokens.
+Use `jspdf` (lightweight, pure-JS, works in browser, no server).
 
-### Files to be touched
-- `src/routes/index.tsx` (hero, carousel, refreshed gallery)
-- `src/routes/contact.tsx` (contact info)
-- `src/components/SiteNav.tsx` (mega menu)
-- `src/components/SiteFooter.tsx` (contacts + compliance)
-- `src/components/WhatsAppButton.tsx` (phone number)
-- `src/components/Reveal.tsx` (new)
-- `src/styles.css` (entrance keyframes)
-- new images under `src/assets/`
+- Install: `bun add jspdf`
+- Create `src/lib/itinerary-pdf.ts` exporting `generateItineraryPdf(data)`.
+- PDF structure:
+  - Header: Qafri logo (embedded as base64 from `src/assets/qafri-logo.png`), company name, "Travel Itinerary Summary".
+  - Brand bar in primary color.
+  - Traveler details block.
+  - Destinations table (city, country, nights).
+  - Selected services list with short descriptions.
+  - Preferences and special requests.
+  - Footer on every page: "Qafri Tours & Travels Ltd. · Nairobi, Kenya · +254 712 909 770 · info@qafritoursandtravels.africa · IATA Accredited Agency · www.qafritoursandtravels.africa".
+  - File name: `Qafri-Itinerary-{travelerLastName}-{date}.pdf`.
+- Convert logo to base64 at build time via Vite `?url` + fetch, or import as base64 string using `?inline` — simplest: import the PNG and use a small helper that reads it via fetch in the browser before generating.
+
+## Files
+
+**New**
+- `src/routes/services.$slug.tsx`
+- `src/routes/itinerary.tsx`
+- `src/lib/itinerary-pdf.ts`
+
+**Edited**
+- `src/lib/services.ts` (add `included`, `highlights`, `process`)
+- `src/components/SiteNav.tsx` (mega menu links → detail routes; add "Plan Trip" link)
+- `src/routes/services.tsx` (cards link to detail pages)
+- `src/routes/index.tsx` (carousel cards link to detail pages; add itinerary CTA)
+- `package.json` (jspdf)
+
+## Technical notes
+
+- PDF is generated entirely client-side; no server function or storage needed.
+- Itinerary state is local-only; not saved to a database (no Cloud usage). If you'd like saved itineraries with a "My Trips" page later, that requires Lovable Cloud — say the word.
+- All new routes get `head()` metadata and `<Reveal>` entrance animations consistent with the rest of the site.
