@@ -1,11 +1,11 @@
 export function WhatsAppButton() {
   return (
     <a
-      href="https://wa.me/254700000000"
+      href="https://wa.me/254712909770"
       target="_blank"
       rel="noreferrer"
       aria-label="Chat on WhatsApp"
-      className="fixed bottom-8 right-8 z-50 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform duration-300"
+      className="fixed bottom-8 right-8 z-50 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform duration-300 animate-fade-in-soft"
     >
       <svg
         fill="currentColor"
