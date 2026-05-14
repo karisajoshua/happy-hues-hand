@@ -30,7 +30,7 @@ export const Route = createFileRoute("/contact")({
           name: "Qafri Tours & Travels",
           url: "https://qafritoursandtravels.africa",
           email: "info@qafritoursandtravels.africa",
-          telephone: ["+254712909770", "+254100521498"],
+          telephone: ["+254712909770"],
           address: {
             "@type": "PostalAddress",
             addressLocality: "Nairobi",
@@ -190,7 +190,7 @@ function ContactPage() {
             </h3>
             <ul className="space-y-6">
               {[
-                ["Phone", "+254 712 909 770 / +254 100 521 498"],
+                ["Phone", "+254 712 909 770"],
                 ["Email", "info@qafritoursandtravels.africa"],
                 ["Website", "www.qafritoursandtravels.africa"],
                 ["Headquarters", "Nairobi, Kenya"],

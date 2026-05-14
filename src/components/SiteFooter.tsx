@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, Twitter, Mail, Phone, type LucideIcon } from "lucide-react";
 import logo from "@/assets/qafri-logo.png";
+import iataLogo from "@/assets/iata-logo.png";
+import traLogo from "@/assets/tra-logo.png";
 
 function SocialIcon({
   href,
@@ -41,9 +43,29 @@ export function SiteFooter() {
             Elevating the standards of global exploration through corporate
             precision and an artistic soul.
           </p>
-          <p className="text-[10px] tracking-[0.15em] uppercase text-primary font-semibold">
-            IATA Accredited Agency
-          </p>
+          <div className="space-y-3">
+            <p className="text-[10px] tracking-[0.15em] uppercase text-primary font-semibold">
+              IATA Accredited Agency
+            </p>
+            <div className="flex items-center gap-4">
+              <img
+                src={iataLogo}
+                alt="IATA Accredited Agency"
+                className="h-10 w-auto bg-white rounded px-2 py-1"
+                width={120}
+                height={40}
+                loading="lazy"
+              />
+              <img
+                src={traLogo}
+                alt="Tourism Regulatory Authority"
+                className="h-10 w-auto bg-white rounded px-2 py-1"
+                width={120}
+                height={40}
+                loading="lazy"
+              />
+            </div>
+          </div>
         </div>
 
         <FooterCol
@@ -64,11 +86,6 @@ export function SiteFooter() {
             <li>
               <a href="tel:+254712909770" className="hover:text-primary transition-colors">
                 +254 712 909 770
-              </a>
-            </li>
-            <li>
-              <a href="tel:+254100521498" className="hover:text-primary transition-colors">
-                +254 100 521 498
               </a>
             </li>
             <li>

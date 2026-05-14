@@ -318,7 +318,7 @@ function ItineraryBuilder() {
                   Send to Qafri
                 </button>
                 <div className="mt-6 pt-6 border-t border-outline-variant/40 text-xs text-on-surface-variant space-y-1">
-                  <p>+254 712 909 770 / +254 100 521 498</p>
+                  <p>+254 712 909 770</p>
                   <p>info@qafritoursandtravels.africa</p>
                   <p>IATA Accredited Agency</p>
                 </div>
