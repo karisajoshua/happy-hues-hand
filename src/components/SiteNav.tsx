@@ -1,5 +1,5 @@
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { Link, useLocation } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import logo from "@/assets/qafri-logo.png";
 import { SERVICES } from "@/lib/services";
 
@@ -13,6 +13,12 @@ const links = [
 
 export function SiteNav() {
   const [openMega, setOpenMega] = useState(false);
+  const location = useLocation();
+
+  // Close mega menu on route change
+  useEffect(() => {
+    setOpenMega(false);
+  }, [location.pathname]);
 
   return (
     <nav
@@ -80,8 +86,9 @@ export function SiteNav() {
 
       {/* Mega menu panel */}
       <div
-        className={`hidden md:block absolute left-0 right-0 top-full overflow-hidden transition-all duration-300 ${
-          openMega ? "max-h-[640px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+        onMouseEnter={() => setOpenMega(true)}
+        className={`hidden md:block absolute left-0 right-0 top-full pt-2 transition-all duration-300 ${
+          openMega ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
         <div className="glass-panel border-t border-outline-variant/30 shadow-[0_30px_60px_rgba(0,52,109,0.12)]">
@@ -92,7 +99,6 @@ export function SiteNav() {
                   key={s.slug}
                   to="/services/$slug"
                   params={{ slug: s.slug }}
-                  onClick={() => setOpenMega(false)}
                   className="group block rounded-lg overflow-hidden bg-white/60 hover:bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
                 >
                   <div className="aspect-[16/10] overflow-hidden">
@@ -122,7 +128,6 @@ export function SiteNav() {
               </p>
               <Link
                 to="/services"
-                onClick={() => setOpenMega(false)}
                 className="text-[12px] font-semibold tracking-[0.1em] uppercase text-primary hover:opacity-70"
               >
                 View All Services →
