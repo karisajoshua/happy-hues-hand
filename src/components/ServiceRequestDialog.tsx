@@ -108,7 +108,7 @@ export function ServiceRequestDialog({
                 maxLength={100}
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="input"
+                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
               />
             </Field>
             <Field label="Phone (WhatsApp) *">
@@ -118,7 +118,7 @@ export function ServiceRequestDialog({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+254..."
-                className="input"
+                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
               />
             </Field>
             <Field label="Email">
@@ -127,7 +127,7 @@ export function ServiceRequestDialog({
                 maxLength={200}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input"
+                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
               />
             </Field>
             <Field label="Party size">
@@ -137,7 +137,7 @@ export function ServiceRequestDialog({
                 max={50}
                 value={partySize}
                 onChange={(e) => setPartySize(Number(e.target.value) || 1)}
-                className="input"
+                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
               />
             </Field>
             <Field label="Preferred date">
@@ -145,7 +145,7 @@ export function ServiceRequestDialog({
                 type="date"
                 value={preferredDate}
                 onChange={(e) => setPreferredDate(e.target.value)}
-                className="input"
+                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
               />
             </Field>
             <Field label="Destination / Route">
@@ -154,7 +154,7 @@ export function ServiceRequestDialog({
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder="e.g. Nairobi → Maasai Mara"
-                className="input"
+                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
               />
             </Field>
             <div className="md:col-span-2">
@@ -164,7 +164,7 @@ export function ServiceRequestDialog({
                   value={budget}
                   onChange={(e) => setBudget(e.target.value)}
                   placeholder="e.g. USD 2,500 per person"
-                  className="input"
+                  className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
                 />
               </Field>
             </div>
@@ -175,7 +175,7 @@ export function ServiceRequestDialog({
                   maxLength={1000}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="input resize-y"
+                  className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors resize-y"
                 />
               </Field>
             </div>
