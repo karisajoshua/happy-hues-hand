@@ -160,9 +160,13 @@ function ContactPage() {
             </h3>
             <ul className="space-y-6">
               {[
-                ["Phone", "+254 700 000 000"],
-                ["Email", "bookings@qafritours.com"],
-                ["Location", "Westlands, Nairobi, Kenya"],
+                ["Phone", "+254 712 909 770 / +254 100 521 498"],
+                ["Email", "info@qafritoursandtravels.africa"],
+                ["Website", "www.qafritoursandtravels.africa"],
+                ["Headquarters", "Nairobi, Kenya"],
+                ["Instagram", "@qafri.tours"],
+                ["X / Twitter", "@QafriTours"],
+                ["Accreditation", "IATA Accredited Agency"],
               ].map(([t, v]) => (
                 <li key={t} className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary text-sm shrink-0">

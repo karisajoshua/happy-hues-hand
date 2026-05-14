@@ -231,3 +231,32 @@
     color: var(--on-primary);
   }
 }
+
+@keyframes qafri-fade-up {
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes qafri-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.reveal {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  animation: qafri-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-fade-up {
+  animation: qafri-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-fade-in-soft {
+  animation: qafri-fade-in 1.2s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal.is-visible, .animate-fade-up, .animate-fade-in-soft {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
