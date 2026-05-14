@@ -7,6 +7,7 @@ const links = [
   { to: "/", label: "Home" },
   { to: "/safaris", label: "Safaris" },
   { to: "/services", label: "Services", mega: true },
+  { to: "/itinerary", label: "Plan Trip" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -89,7 +90,8 @@ export function SiteNav() {
               {SERVICES.map((s) => (
                 <Link
                   key={s.slug}
-                  to="/services"
+                  to="/services/$slug"
+                  params={{ slug: s.slug }}
                   onClick={() => setOpenMega(false)}
                   className="group block rounded-lg overflow-hidden bg-white/60 hover:bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
                 >

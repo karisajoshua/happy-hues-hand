@@ -170,7 +170,8 @@ function HomePage() {
                         {s.long}
                       </p>
                       <Link
-                        to="/services"
+                        to="/services/$slug"
+                        params={{ slug: s.slug }}
                         className="mt-4 inline-flex items-center gap-2 text-[12px] tracking-[0.1em] uppercase font-semibold text-primary"
                       >
                         Learn More
