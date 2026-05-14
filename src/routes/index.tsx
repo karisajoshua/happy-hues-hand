@@ -151,7 +151,11 @@ function HomePage() {
                   key={s.slug}
                   className="pl-6 basis-full sm:basis-1/2 lg:basis-1/3"
                 >
-                  <article className="group relative bg-white rounded-xl overflow-hidden cloud-shadow h-full flex flex-col">
+                  <Link
+                    to="/services/$slug"
+                    params={{ slug: s.slug }}
+                    className="group relative bg-white rounded-xl overflow-hidden cloud-shadow h-full flex flex-col"
+                  >
                     <div className="aspect-[4/3] overflow-hidden">
                       <img
                         src={s.image}
@@ -160,6 +164,7 @@ function HomePage() {
                         loading="lazy"
                         width={800}
                         height={600}
+                        draggable={false}
                       />
                     </div>
                     <div className="p-6 flex flex-col grow">
@@ -169,16 +174,12 @@ function HomePage() {
                       <p className="text-on-surface-variant text-sm grow">
                         {s.long}
                       </p>
-                      <Link
-                        to="/services/$slug"
-                        params={{ slug: s.slug }}
-                        className="mt-4 inline-flex items-center gap-2 text-[12px] tracking-[0.1em] uppercase font-semibold text-primary"
-                      >
+                      <span className="mt-4 inline-flex items-center gap-2 text-[12px] tracking-[0.1em] uppercase font-semibold text-primary">
                         Learn More
                         <span className="w-8 h-px bg-primary transition-all group-hover:w-12" />
-                      </Link>
+                      </span>
                     </div>
-                  </article>
+                  </Link>
                 </CarouselItem>
               ))}
             </CarouselContent>
