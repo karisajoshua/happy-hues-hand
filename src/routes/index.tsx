@@ -30,6 +30,9 @@ export const Route = createFileRoute("/")({
 const HERO_SLIDES = SERVICES.map((s) => ({
   image: s.image,
   title: s.title,
+  short: s.short,
+  long: s.long,
+  slug: s.slug,
   alt: `${s.title} — Qafri Tours & Travels`,
 }));
 
@@ -74,36 +77,40 @@ function HomePage() {
               fetchPriority={i === 0 ? "high" : "low"}
             />
           ))}
-          <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
         </div>
         <div className="relative z-10 container-max w-full">
-          <div className="max-w-3xl glass-panel rounded-xl p-8 md:p-10 cloud-shadow animate-fade-up">
-            <span className="inline-block text-[12px] tracking-[0.3em] uppercase text-primary font-semibold mb-6">
-              Established Luxury Travel
+          <div className="max-w-2xl glass-panel-hero rounded-2xl p-8 md:p-10 animate-fade-up text-white">
+            <span className="inline-block text-[12px] tracking-[0.3em] uppercase text-white/80 font-semibold mb-6">
+              {HERO_SLIDES[active].title}
             </span>
-            <h1 className="font-display text-[40px] md:text-[64px] leading-[1.05] tracking-[-0.02em] font-bold text-primary mb-8">
-              Discover the World
-              <br />
-              With Unrivaled
-              <br />
-              Precision.
+            <h1
+              key={`h-${active}`}
+              className="font-display text-[36px] md:text-[56px] leading-[1.05] tracking-[-0.02em] font-bold text-white mb-6 animate-fade-in-soft drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]"
+            >
+              {HERO_SLIDES[active].title}.
             </h1>
-            <p className="text-lg text-on-surface-variant mb-10 max-w-lg">
-              Bespoke itineraries crafted for the global explorer. From
-              high-altitude logistics to serene safari escapes, we handle the
-              complexity so you can embrace the journey.
+            <p
+              key={`p-${active}`}
+              className="text-base md:text-lg text-white/90 mb-8 max-w-lg animate-fade-in-soft"
+            >
+              {HERO_SLIDES[active].long}
             </p>
             <div className="flex flex-wrap gap-6 items-center">
-              <Link to="/safaris" className="btn-primary inline-block">
-                Explore Journeys
+              <Link
+                to="/services/$slug"
+                params={{ slug: HERO_SLIDES[active].slug }}
+                className="btn-primary inline-block"
+              >
+                Explore {HERO_SLIDES[active].title}
               </Link>
               <Link
                 to="/services"
                 className="flex items-center gap-3 group cursor-pointer"
               >
-                <span className="w-12 h-px bg-primary/40 group-hover:w-16 transition-all" />
-                <span className="text-[12px] tracking-[0.1em] uppercase font-semibold text-primary">
-                  Our Philosophy
+                <span className="w-12 h-px bg-white/50 group-hover:w-16 transition-all" />
+                <span className="text-[12px] tracking-[0.1em] uppercase font-semibold text-white">
+                  All Services
                 </span>
               </Link>
             </div>
