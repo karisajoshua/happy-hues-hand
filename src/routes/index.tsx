@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useId, cloneElement, isValidElement, type ReactElement } from "react";
-import heroImg from "@/assets/hero-savannah.jpg";
+import { useEffect, useState } from "react";
 import elephantArt from "@/assets/elephant-art.jpg";
 import campNight from "@/assets/camp-night.jpg";
 import { Reveal } from "@/components/Reveal";
