@@ -82,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Corporate-editorial luxury travel agency. Bespoke safaris, air ticketing, visas, and concierge logistics across Africa and beyond.",
       },
       { name: "author", content: "Qafri Tours" },
-      { property: "og:title", content: "Qafri Tours & Travels" },
+      { property: "og:title", content: "Qafri Tours & Travels — Bespoke African Journeys" },
       {
         property: "og:description",
         content:
@@ -91,6 +91,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Qafri Tours & Travels — Bespoke African Journeys" },
+      { name: "description", content: "Design & Build Studio creates interactive React web applications from provided designs." },
+      { property: "og:description", content: "Design & Build Studio creates interactive React web applications from provided designs." },
+      { name: "twitter:description", content: "Design & Build Studio creates interactive React web applications from provided designs." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1c364370-9157-44b0-93d3-3c0dbe5b99a8/id-preview-39d397b9--0f8da266-3385-45ae-a106-4b8dfb5da278.lovable.app-1778753750485.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1c364370-9157-44b0-93d3-3c0dbe5b99a8/id-preview-39d397b9--0f8da266-3385-45ae-a106-4b8dfb5da278.lovable.app-1778753750485.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
