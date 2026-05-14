@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useId, cloneElement, isValidElement, type ReactElement } from "react";
 import heroImg from "@/assets/hero-savannah.jpg";
 import elephantArt from "@/assets/elephant-art.jpg";
 import campNight from "@/assets/camp-night.jpg";
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/")({
           "Corporate-editorial luxury travel agency. Bespoke safaris, air ticketing, visas, and concierge logistics across Africa.",
       },
     ],
+    links: [{ rel: "canonical", href: "https://happy-hues-hand.lovable.app/" }],
   }),
 });
 
@@ -29,6 +31,7 @@ function HomePage() {
             className="w-full h-full object-cover"
             width={1920}
             height={1080}
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-surface/85 via-surface/30 to-transparent" />
         </div>
@@ -209,9 +212,9 @@ function HomePage() {
                     <span className="w-2 h-2 rounded-full bg-primary" />
                   </div>
                   <div>
-                    <h5 className="font-display text-xl font-semibold text-on-surface mb-1">
+                    <h3 className="font-display text-xl font-semibold text-on-surface mb-1">
                       {title}
-                    </h5>
+                    </h3>
                     <p className="text-on-surface-variant">{body}</p>
                   </div>
                 </div>
@@ -238,9 +241,9 @@ function HomePage() {
           ].map(([title, body]) => (
             <div key={title} className="p-8 hover:bg-surface-container-low transition-colors rounded-lg">
               <div className="text-primary text-3xl mb-6">◆</div>
-              <h4 className="font-display text-xl font-semibold text-primary mb-4">
+              <h3 className="font-display text-xl font-semibold text-primary mb-4">
                 {title}
-              </h4>
+              </h3>
               <p className="text-on-surface-variant">{body}</p>
             </div>
           ))}
@@ -251,12 +254,19 @@ function HomePage() {
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  const id = useId();
+  const child = isValidElement(children)
+    ? cloneElement(children as ReactElement<{ id?: string }>, { id })
+    : children;
   return (
     <div className="space-y-2">
-      <label className="text-[10px] uppercase tracking-[0.15em] font-semibold text-on-secondary-container">
+      <label
+        htmlFor={id}
+        className="text-[10px] uppercase tracking-[0.15em] font-semibold text-on-secondary-container"
+      >
         {label}
       </label>
-      {children}
+      {child}
     </div>
   );
 }
@@ -290,9 +300,9 @@ function SmallService({
       } relative overflow-hidden`}
     >
       <div className="text-primary mb-4 text-2xl">●</div>
-      <h4 className="font-display text-xl font-semibold text-primary mb-2">
+      <h3 className="font-display text-xl font-semibold text-primary mb-2">
         {title}
-      </h4>
+      </h3>
       <p className="text-on-surface-variant">{body}</p>
     </div>
   );

@@ -63,9 +63,9 @@ function FooterCol({
 }) {
   return (
     <div className="space-y-4">
-      <h5 className="text-[12px] font-semibold tracking-[0.15em] uppercase text-primary">
+      <h3 className="text-[12px] font-semibold tracking-[0.15em] uppercase text-primary">
         {title}
-      </h5>
+      </h3>
       <nav className="flex flex-col gap-3">
         {items.map((i) => (
           <Link

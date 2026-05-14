@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useId, useState, cloneElement, isValidElement, type ReactElement } from "react";
 import heroImg from "@/assets/hero-savannah.jpg";
 
 export const Route = createFileRoute("/contact")({
@@ -13,6 +13,7 @@ export const Route = createFileRoute("/contact")({
           "Submit your bespoke travel inquiry. Our experts curate itineraries with corporate precision and editorial care.",
       },
     ],
+    links: [{ rel: "canonical", href: "https://happy-hues-hand.lovable.app/contact" }],
   }),
 });
 
@@ -232,12 +233,19 @@ function Field({
   label: string;
   children: React.ReactNode;
 }) {
+  const id = useId();
+  const child = isValidElement(children)
+    ? cloneElement(children as ReactElement<{ id?: string }>, { id })
+    : children;
   return (
     <div>
-      <label className="block text-[12px] tracking-[0.1em] uppercase font-semibold text-on-surface mb-2">
+      <label
+        htmlFor={id}
+        className="block text-[12px] tracking-[0.1em] uppercase font-semibold text-on-surface mb-2"
+      >
         {label}
       </label>
-      {children}
+      {child}
     </div>
   );
 }

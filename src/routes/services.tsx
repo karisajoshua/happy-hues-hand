@@ -16,6 +16,7 @@ export const Route = createFileRoute("/services")({
       },
       { property: "og:image", content: servicesHero },
     ],
+    links: [{ rel: "canonical", href: "https://happy-hues-hand.lovable.app/services" }],
   }),
 });
 
@@ -244,9 +245,9 @@ function ServicesPage() {
                 >
                   <span className="font-display text-2xl font-semibold">{n}</span>
                 </div>
-                <h4 className="font-display text-lg font-semibold text-primary mb-2">
+                <h3 className="font-display text-lg font-semibold text-primary mb-2">
                   {t}
-                </h4>
+                </h3>
                 <p className="text-sm text-on-surface-variant px-4">{b}</p>
               </div>
             ))}
