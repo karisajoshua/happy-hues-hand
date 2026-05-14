@@ -194,7 +194,7 @@ export async function generateItineraryPdf(data: ItineraryData) {
   };
 
   // ---------- INTERIOR PAGE CHROME ----------
-  const drawInteriorChrome = (pageNum: number, totalPages: number) => {
+  const drawInteriorChrome = (pageNum: number) => {
     // Cream background
     doc.setFillColor(...CREAM);
     doc.rect(0, 0, pageW, pageH, "F");
