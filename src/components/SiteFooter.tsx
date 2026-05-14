@@ -162,25 +162,3 @@ function FooterCol({
   );
 }
 
-function SocialIcon({
-  href,
-  label,
-  Icon,
-}: {
-  href: string;
-  label: string;
-  Icon: React.ComponentType<{ className?: string }>;
-}) {
-  const isExternal = href.startsWith("http");
-  return (
-    <a
-      href={href}
-      aria-label={label}
-      title={label}
-      {...(isExternal ? { target: "_blank", rel: "noreferrer" } : {})}
-      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-outline-variant/40 text-on-surface-variant hover:text-primary hover:border-primary hover:bg-primary/5 transition-colors"
-    >
-      <Icon className="h-4 w-4" />
-    </a>
-  );
-}
