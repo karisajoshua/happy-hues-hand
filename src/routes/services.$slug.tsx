@@ -193,6 +193,12 @@ function ServiceDetailPage() {
           </div>
         </section>
       </Reveal>
+
+      <ServiceRequestDialog
+        service={service}
+        open={requestOpen}
+        onClose={() => setRequestOpen(false)}
+      />
     </>
   );
 }
