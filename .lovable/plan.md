@@ -1,19 +1,49 @@
-# Plan
+# Plan: Nav polish + mobile-friendly pass
 
-## 1. Hero background carousel
-Replace the single `<img>` background in the hero (`src/routes/index.tsx`, lines 36–45) with an auto-rotating carousel of all service images from `SERVICES` (`src/lib/services.ts`).
+## 1. Solid white sticky nav
+- In `src/components/SiteNav.tsx`, replace the `glass-panel` class on the `<nav>` with a solid white background (`bg-white`) and keep the existing border + shadow.
+- Remove the translucent backdrop blur so the nav never shows page content through it on scroll.
+- Keep the mega-menu panel itself glassy/white as today (it sits below the bar).
 
-- Build a lightweight inline carousel (no shadcn dependency for the BG): a stack of absolutely-positioned `<img>` layers, one per service, cross-fading every ~5s using a state index + `setInterval` in a `useEffect`. Cleanup on unmount.
-- First image: `loading="eager"` + `fetchPriority="high"` (LCP). Rest: `loading="lazy"`.
-- Add a subtle dark gradient overlay so the glass-panel headline stays readable across all images.
-- Add a small caption pill in the bottom-right of the hero showing the current service title (e.g. "Now showing: Helicopter Services") with a soft fade transition — ties the visual to the offering.
-- Add tiny dot indicators at the bottom center, clickable to jump.
-- Respect `prefers-reduced-motion`: when reduced, do not auto-rotate; show only the first image.
+## 2. Mega menu — block the page behind it
+- Add a full-viewport backdrop (fixed overlay, dimmed + blurred) that appears together with the mega menu so the scrolling page underneath is no longer visible.
+- Overlay sits below the mega panel, above page content, and closes the menu on click.
+- Lock body scroll while the mega menu is open so the page can't scroll behind it.
 
-## 2. Remove search widget
-Delete the entire "Inquiry Bar" `<Reveal>` block (lines 81–115) including the form, its `Field` usages, and — if no longer referenced anywhere else in the file — the `Field` helper component itself. Keep the negative top margin look by letting the next "Services" section's top padding handle spacing (no overlap needed once the bar is gone).
+## 3. Mobile-friendly site
+The current nav is desktop-only (`hidden md:flex`) with no mobile menu, and several pages assume desktop widths. Pass:
 
-## Technical notes
-- File touched: `src/routes/index.tsx` only.
-- No new deps. No image generation needed (reusing existing `SERVICES[*].image`).
-- Image array is small (9 entries) so no virtualization needed.
+### Nav (mobile)
+- Add a hamburger button visible below `md`.
+- Tapping it opens a `Sheet` (already in `components/ui/sheet.tsx`) from the right with: Home, Safaris, Services (expandable list of all SERVICES), Plan Trip, Contact, Request Quote, Book a Trip.
+- Logo height reduced on small screens; CTA "Book a Trip" hidden on the smallest widths to avoid crowding.
+
+### Home (`src/routes/index.tsx`)
+- Audit hero: ensure headline uses the existing `text-display-mobile` token, padding/margins use container-max, carousel controls reachable on touch, glass overlay sized for narrow screens.
+- Stack any multi-column sections to single column under `md`.
+
+### Services pages
+- `services.index.tsx`: ensure card grid collapses to 1 column on mobile, 2 on `sm`, 3+ on `lg`.
+- `services.$slug.tsx`: hero text scales down; "Request this service" button full-width on mobile; `ServiceRequestDialog` form uses single-column fields under `sm`.
+
+### Other routes
+- `safaris.tsx`, `itinerary.tsx`, `contact.tsx`: verify grids/forms collapse to single column on mobile and that horizontal padding uses `container-max` so nothing overflows.
+
+### Footer (`SiteFooter.tsx`)
+- Verify columns stack on mobile and the new IATA/TRA logo row wraps cleanly.
+
+### Global
+- Confirm `meta viewport` is present in `__root.tsx` (it is).
+- Audit any fixed widths / `min-w-*` / large `text-display-lg` usage and add responsive variants.
+- Make sure WhatsApp floating button doesn't overlap content on small screens.
+
+## Out of scope
+- No backend, routing, or content changes.
+- No redesign of color tokens — only responsive layout and the nav fixes above.
+
+## Files likely touched
+- `src/components/SiteNav.tsx` (nav bg, mega backdrop, mobile sheet menu)
+- `src/components/SiteFooter.tsx` (mobile stacking check)
+- `src/components/ServiceRequestDialog.tsx` (form responsive grid)
+- `src/routes/index.tsx`, `services.index.tsx`, `services.$slug.tsx`, `safaris.tsx`, `itinerary.tsx`, `contact.tsx` (responsive tweaks only)
+- `src/styles.css` (small helper class if needed for body scroll lock)
