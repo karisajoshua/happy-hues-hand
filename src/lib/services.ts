@@ -8,6 +8,16 @@ import chauffeur from "@/assets/services/chauffeur.jpg";
 import events from "@/assets/services/events.jpg";
 import helicopter from "@/assets/services/helicopter.jpg";
 
+export type RequestField = {
+  name: string;
+  label: string;
+  type: "text" | "email" | "tel" | "number" | "date" | "textarea" | "select";
+  required?: boolean;
+  placeholder?: string;
+  options?: string[];
+  colSpan?: 1 | 2;
+};
+
 export type Service = {
   slug: string;
   title: string;
@@ -17,6 +27,117 @@ export type Service = {
   included: string[];
   highlights: string[];
   process: { step: string; detail: string }[];
+  requestFields?: RequestField[];
+};
+
+const COMMON_NOTES: RequestField = {
+  name: "notes",
+  label: "Additional notes",
+  type: "textarea",
+  colSpan: 2,
+  placeholder: "Anything else we should know",
+};
+
+const REQUEST_FIELDS: Record<string, RequestField[]> = {
+  passport: [
+    { name: "applicationType", label: "Application type", type: "select", required: true, options: ["New passport", "Renewal", "Lost / damaged replacement", "Expedited"] },
+    { name: "nationality", label: "Nationality", type: "text", required: true },
+    { name: "currentPassportNo", label: "Current passport number", type: "text" },
+    { name: "dateOfBirth", label: "Date of birth", type: "date" },
+    { name: "travelDate", label: "Intended travel date", type: "date" },
+    { name: "deliveryAddress", label: "Delivery address", type: "text", colSpan: 2 },
+    COMMON_NOTES,
+  ],
+  visa: [
+    { name: "destinationCountry", label: "Destination country", type: "text", required: true },
+    { name: "visaType", label: "Visa type", type: "select", required: true, options: ["Tourist", "Business", "Student", "Transit", "Work", "Family visit"] },
+    { name: "nationality", label: "Nationality", type: "text", required: true },
+    { name: "travelStart", label: "Intended travel start", type: "date" },
+    { name: "travelEnd", label: "Intended travel end", type: "date" },
+    { name: "duration", label: "Duration of stay", type: "text", placeholder: "e.g. 14 days" },
+    { name: "previousVisas", label: "Previous visas held", type: "textarea", colSpan: 2 },
+    COMMON_NOTES,
+  ],
+  insurance: [
+    { name: "destination", label: "Destination(s)", type: "text", required: true },
+    { name: "tripStart", label: "Trip start date", type: "date", required: true },
+    { name: "tripEnd", label: "Trip end date", type: "date", required: true },
+    { name: "travellers", label: "Number of travellers", type: "number", required: true },
+    { name: "ages", label: "Ages of travellers", type: "text", placeholder: "e.g. 34, 36, 8" },
+    { name: "planType", label: "Plan type", type: "select", options: ["Single trip", "Annual multi-trip", "Schengen-compliant"] },
+    { name: "activities", label: "Planned activities", type: "text", placeholder: "e.g. safari, diving, skiing" },
+    { name: "medical", label: "Pre-existing medical conditions", type: "textarea", colSpan: 2 },
+    COMMON_NOTES,
+  ],
+  airticketing: [
+    { name: "from", label: "From (city / airport)", type: "text", required: true },
+    { name: "to", label: "To (city / airport)", type: "text", required: true },
+    { name: "departDate", label: "Departure date", type: "date", required: true },
+    { name: "returnDate", label: "Return date", type: "date" },
+    { name: "cabin", label: "Cabin class", type: "select", required: true, options: ["Economy", "Premium economy", "Business", "First"] },
+    { name: "adults", label: "Adults", type: "number", required: true },
+    { name: "children", label: "Children", type: "number" },
+    { name: "infants", label: "Infants", type: "number" },
+    { name: "preferredAirline", label: "Preferred airline", type: "text" },
+    { name: "flexibility", label: "Date flexibility", type: "select", options: ["Fixed dates", "± 1 day", "± 3 days", "Flexible"] },
+    COMMON_NOTES,
+  ],
+  hotel: [
+    { name: "city", label: "City / destination", type: "text", required: true },
+    { name: "checkIn", label: "Check-in", type: "date", required: true },
+    { name: "checkOut", label: "Check-out", type: "date", required: true },
+    { name: "rooms", label: "Rooms", type: "number", required: true },
+    { name: "adults", label: "Adults", type: "number", required: true },
+    { name: "children", label: "Children", type: "number" },
+    { name: "starRating", label: "Star rating preference", type: "select", options: ["3-star", "4-star", "5-star", "Luxury / boutique"] },
+    { name: "propertyStyle", label: "Property style", type: "select", options: ["Business hotel", "Boutique", "Resort", "Serviced apartment", "Villa"] },
+    { name: "specialRequests", label: "Special requests", type: "textarea", colSpan: 2 },
+    COMMON_NOTES,
+  ],
+  safari: [
+    { name: "destinations", label: "Destinations of interest", type: "text", required: true, placeholder: "Kenya, Tanzania, Uganda, Rwanda…" },
+    { name: "startDate", label: "Start date", type: "date", required: true },
+    { name: "nights", label: "Duration (nights)", type: "number", required: true },
+    { name: "adults", label: "Adults", type: "number", required: true },
+    { name: "children", label: "Children", type: "number" },
+    { name: "accommodation", label: "Accommodation style", type: "select", options: ["Luxury lodge", "Tented camp", "Mobile expedition", "Mid-range"] },
+    { name: "interests", label: "Interests", type: "text", placeholder: "Wildlife, photography, beach extension…" },
+    { name: "budget", label: "Indicative budget per person", type: "text", placeholder: "e.g. USD 3,500" },
+    COMMON_NOTES,
+  ],
+  chauffeur: [
+    { name: "serviceType", label: "Service type", type: "select", required: true, options: ["Airport transfer", "Hourly hire", "Multi-day", "Roadshow", "Wedding / event"] },
+    { name: "pickup", label: "Pickup location", type: "text", required: true },
+    { name: "dropoff", label: "Drop-off location", type: "text", required: true },
+    { name: "date", label: "Date", type: "date", required: true },
+    { name: "time", label: "Pickup time", type: "text", placeholder: "e.g. 14:30", required: true },
+    { name: "passengers", label: "Passengers", type: "number", required: true },
+    { name: "luggage", label: "Luggage pieces", type: "number" },
+    { name: "vehicle", label: "Vehicle preference", type: "select", options: ["Executive saloon", "SUV", "Van", "Minibus"] },
+    COMMON_NOTES,
+  ],
+  events: [
+    { name: "eventType", label: "Event type", type: "select", required: true, options: ["Conference", "Incentive trip", "Gala dinner", "Exhibition", "Corporate retreat"] },
+    { name: "destination", label: "Preferred destination", type: "text", required: true },
+    { name: "startDate", label: "Tentative start date", type: "date" },
+    { name: "endDate", label: "Tentative end date", type: "date" },
+    { name: "delegates", label: "Expected delegates", type: "number", required: true },
+    { name: "duration", label: "Duration (days)", type: "number" },
+    { name: "services", label: "Required services", type: "text", placeholder: "Venue, AV, transport, accommodation…", colSpan: 2 },
+    { name: "budget", label: "Indicative budget", type: "text", placeholder: "e.g. USD 50,000" },
+    COMMON_NOTES,
+  ],
+  helicopter: [
+    { name: "missionType", label: "Mission type", type: "select", required: true, options: ["Private transfer", "Aerial safari", "Scenic flight", "Medevac standby"] },
+    { name: "pickup", label: "Pickup point", type: "text", required: true },
+    { name: "destination", label: "Destination", type: "text", required: true },
+    { name: "date", label: "Date", type: "date", required: true },
+    { name: "time", label: "Time", type: "text", placeholder: "e.g. 09:00", required: true },
+    { name: "passengers", label: "Passengers", type: "number", required: true },
+    { name: "baggageKg", label: "Estimated baggage (kg)", type: "number" },
+    { name: "specialRequests", label: "Special requests", type: "textarea", colSpan: 2 },
+    COMMON_NOTES,
+  ],
 };
 
 export const SERVICES: Service[] = [
@@ -245,6 +366,10 @@ export const SERVICES: Service[] = [
     ],
   },
 ];
+
+SERVICES.forEach((s) => {
+  s.requestFields = REQUEST_FIELDS[s.slug];
+});
 
 export function getService(slug: string): Service | undefined {
   return SERVICES.find((s) => s.slug === slug);

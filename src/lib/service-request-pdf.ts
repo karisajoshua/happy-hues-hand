@@ -7,11 +7,8 @@ export type ServiceRequestData = {
   fullName: string;
   email: string;
   phone: string;
-  partySize: number;
-  preferredDate: string;
-  destination: string;
-  budget: string;
-  notes: string;
+  fields: { label: string; value: string }[];
+  notes?: string;
 };
 
 const NAVY: [number, number, number] = [10, 31, 61];
@@ -127,10 +124,7 @@ export async function generateServiceRequestPdf(
     ["Full Name", data.fullName || "—"],
     ["Email", data.email || "—"],
     ["Telephone", data.phone || "—"],
-    ["Party Size", String(data.partySize ?? "—")],
-    ["Preferred Date", data.preferredDate || "—"],
-    ["Destination / Route", data.destination || "—"],
-    ["Indicative Budget", data.budget || "—"],
+    ...data.fields.map((f) => [f.label, f.value || "—"] as [string, string]),
   ];
   const rowH = 26;
   const cardH = rows.length * rowH + 16;
