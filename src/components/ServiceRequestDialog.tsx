@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import {
   generateServiceRequestPdf,
   type ServiceRequestData,
 } from "@/lib/service-request-pdf";
-import type { Service } from "@/lib/services";
+import type { RequestField, Service } from "@/lib/services";
 
 const WHATSAPP_NUMBER = "254712909770";
+
+type FieldValue = string | number;
 
 export function ServiceRequestDialog({
   service,
@@ -17,34 +19,45 @@ export function ServiceRequestDialog({
   open: boolean;
   onClose: () => void;
 }) {
+  const fields: RequestField[] = useMemo(
+    () => service.requestFields ?? [],
+    [service],
+  );
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [partySize, setPartySize] = useState(2);
-  const [preferredDate, setPreferredDate] = useState("");
-  const [destination, setDestination] = useState("");
-  const [budget, setBudget] = useState("");
-  const [notes, setNotes] = useState("");
+  const [values, setValues] = useState<Record<string, FieldValue>>({});
   const [busy, setBusy] = useState(false);
 
   if (!open) return null;
 
+  const setField = (name: string, v: FieldValue) =>
+    setValues((s) => ({ ...s, [name]: v }));
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim() || !phone.trim()) return;
+    for (const f of fields) {
+      if (f.required && !String(values[f.name] ?? "").trim()) return;
+    }
     setBusy(true);
     try {
+      const notesField = fields.find((f) => f.name === "notes");
+      const detailFields = fields.filter((f) => f.name !== "notes");
       const data: ServiceRequestData = {
         serviceTitle: service.title,
         serviceShort: service.short,
         fullName: fullName.trim().slice(0, 100),
         email: email.trim().slice(0, 200),
         phone: phone.trim().slice(0, 30),
-        partySize,
-        preferredDate,
-        destination: destination.trim().slice(0, 200),
-        budget: budget.trim().slice(0, 100),
-        notes: notes.trim().slice(0, 1000),
+        fields: detailFields.map((f) => ({
+          label: f.label,
+          value: String(values[f.name] ?? "").trim().slice(0, 500),
+        })),
+        notes: notesField
+          ? String(values[notesField.name] ?? "").trim().slice(0, 1000)
+          : undefined,
       };
       const { filename } = await generateServiceRequestPdf(data);
 
@@ -54,10 +67,7 @@ export function ServiceRequestDialog({
         `Name: ${data.fullName}`,
         `Email: ${data.email || "—"}`,
         `Phone: ${data.phone}`,
-        `Party size: ${data.partySize}`,
-        `Preferred date: ${data.preferredDate || "—"}`,
-        `Destination/Route: ${data.destination || "—"}`,
-        `Budget: ${data.budget || "—"}`,
+        ...data.fields.map((f) => `${f.label}: ${f.value || "—"}`),
         data.notes ? `Notes: ${data.notes}` : "",
         "",
         `(PDF "${filename}" has been downloaded — please attach it here.)`,
@@ -71,6 +81,65 @@ export function ServiceRequestDialog({
     } finally {
       setBusy(false);
     }
+  };
+
+  const inputCls =
+    "w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors";
+
+  const renderField = (f: RequestField) => {
+    const v = values[f.name] ?? "";
+    const common = {
+      required: f.required,
+      value: v as string | number,
+      placeholder: f.placeholder,
+      className: inputCls,
+    };
+    if (f.type === "textarea") {
+      return (
+        <textarea
+          {...common}
+          rows={4}
+          maxLength={1000}
+          onChange={(e) => setField(f.name, e.target.value)}
+          className={inputCls + " resize-y"}
+        />
+      );
+    }
+    if (f.type === "select") {
+      return (
+        <select
+          {...common}
+          onChange={(e) => setField(f.name, e.target.value)}
+        >
+          <option value="">Select…</option>
+          {(f.options ?? []).map((o) => (
+            <option key={o} value={o}>
+              {o}
+            </option>
+          ))}
+        </select>
+      );
+    }
+    if (f.type === "number") {
+      return (
+        <input
+          {...common}
+          type="number"
+          min={0}
+          onChange={(e) =>
+            setField(f.name, e.target.value === "" ? "" : Number(e.target.value))
+          }
+        />
+      );
+    }
+    return (
+      <input
+        {...common}
+        type={f.type}
+        maxLength={300}
+        onChange={(e) => setField(f.name, e.target.value)}
+      />
+    );
   };
 
   return (
@@ -108,7 +177,7 @@ export function ServiceRequestDialog({
                 maxLength={100}
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
+                className={inputCls}
               />
             </Field>
             <Field label="Phone (WhatsApp) *">
@@ -118,67 +187,28 @@ export function ServiceRequestDialog({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+254..."
-                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
+                className={inputCls}
               />
             </Field>
-            <Field label="Email">
+            <Field label="Email" colSpan={2}>
               <input
                 type="email"
                 maxLength={200}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
+                className={inputCls}
               />
             </Field>
-            <Field label="Party size">
-              <input
-                type="number"
-                min={1}
-                max={50}
-                value={partySize}
-                onChange={(e) => setPartySize(Number(e.target.value) || 1)}
-                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
-              />
-            </Field>
-            <Field label="Preferred date">
-              <input
-                type="date"
-                value={preferredDate}
-                onChange={(e) => setPreferredDate(e.target.value)}
-                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
-              />
-            </Field>
-            <Field label="Destination / Route">
-              <input
-                maxLength={200}
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                placeholder="e.g. Nairobi → Maasai Mara"
-                className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
-              />
-            </Field>
-            <div className="md:col-span-2">
-              <Field label="Indicative budget">
-                <input
-                  maxLength={100}
-                  value={budget}
-                  onChange={(e) => setBudget(e.target.value)}
-                  placeholder="e.g. USD 2,500 per person"
-                  className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors"
-                />
+
+            {fields.map((f) => (
+              <Field
+                key={f.name}
+                label={f.label + (f.required ? " *" : "")}
+                colSpan={f.colSpan ?? 1}
+              >
+                {renderField(f)}
               </Field>
-            </div>
-            <div className="md:col-span-2">
-              <Field label="Additional notes">
-                <textarea
-                  rows={4}
-                  maxLength={1000}
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-4 py-3 border border-outline-variant rounded-md bg-white text-on-surface focus:border-primary focus:outline-none transition-colors resize-y"
-                />
-              </Field>
-            </div>
+            ))}
           </div>
 
           <p className="text-xs text-on-surface-variant">
@@ -211,12 +241,14 @@ export function ServiceRequestDialog({
 function Field({
   label,
   children,
+  colSpan = 1,
 }: {
   label: string;
   children: React.ReactNode;
+  colSpan?: 1 | 2;
 }) {
   return (
-    <label className="block">
+    <label className={"block " + (colSpan === 2 ? "md:col-span-2" : "")}>
       <span className="block text-[11px] tracking-[0.15em] uppercase font-semibold text-on-surface-variant mb-2">
         {label}
       </span>
