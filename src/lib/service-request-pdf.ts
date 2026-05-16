@@ -7,11 +7,8 @@ export type ServiceRequestData = {
   fullName: string;
   email: string;
   phone: string;
-  partySize: number;
-  preferredDate: string;
-  destination: string;
-  budget: string;
-  notes: string;
+  fields: { label: string; value: string }[];
+  notes?: string;
 };
 
 const NAVY: [number, number, number] = [10, 31, 61];
