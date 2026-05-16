@@ -367,6 +367,10 @@ export const SERVICES: Service[] = [
   },
 ];
 
+SERVICES.forEach((s) => {
+  s.requestFields = REQUEST_FIELDS[s.slug];
+});
+
 export function getService(slug: string): Service | undefined {
   return SERVICES.find((s) => s.slug === slug);
 }
