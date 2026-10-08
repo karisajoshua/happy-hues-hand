@@ -91,12 +91,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://qafritoursandtravels.africa/" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@QafriTours" },
       { name: "twitter:title", content: "Qafri Tours & Travels — Bespoke African Journeys" },
       { name: "twitter:description", content: "Qafri Tours & Travels offers bespoke safaris, flights, visa assistance and corporate travel services in Nairobi, Kenya." },
-      { property: "og:image", content: "https://qafritoursandtravels.africa/og-image.png" },
-      { name: "twitter:image", content: "https://qafritoursandtravels.africa/og-image.png" },
     ],
+    scripts: [{ type: "application/ld+json", children: JSON.stringify({ "@context": "https://schema.org", "@type": "TravelAgency", name: "Qafri Tours & Travels", url: "https://qafritoursandtravels.africa/", telephone: "+254712909770", address: { "@type": "PostalAddress", addressLocality: "Nairobi", addressCountry: "KE" }, areaServed: "Kenya" }) }],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
