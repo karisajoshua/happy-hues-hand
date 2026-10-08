@@ -95,13 +95,13 @@ function HomePage() {
               key={`h-${active}`}
               className="font-display text-[36px] md:text-[56px] leading-[1.05] tracking-[-0.02em] font-bold text-white mb-6 animate-fade-in-soft drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]"
             >
-              {HERO_SLIDES[active].title}.
+              Qafri Tours &amp; Travels
             </h1>
             <p
               key={`p-${active}`}
               className="text-base md:text-lg text-white/90 mb-8 max-w-lg animate-fade-in-soft"
             >
-              {HERO_SLIDES[active].long}
+              Based in Nairobi, Kenya, Qafri Tours &amp; Travels provides IATA-accredited travel services including bespoke African safaris, flights, visa and passport assistance, travel insurance, accommodation and corporate travel planning.
             </p>
             <div className="flex flex-wrap gap-6 items-center">
               <Link
