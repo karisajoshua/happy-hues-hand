@@ -89,7 +89,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Bespoke African journeys, curated safaris, and corporate travel logistics with editorial precision.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://qafritoursandtravels.africa/" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Qafri Tours & Travels — Bespoke African Journeys" },
       { name: "twitter:description", content: "Qafri Tours & Travels offers bespoke safaris, flights, visa assistance and corporate travel services in Nairobi, Kenya." },
