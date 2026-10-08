@@ -1,0 +1,28 @@
+name: Qafri code validation
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Check patched TanStack Start version
+        run: |
+          bun -e 'const v = require("@tanstack/react-start/package.json").version; const [major,minor,patch] = v.split(".").map(Number); if (major !== 1 || minor < 168 || (minor === 168 && patch < 60)) process.exit(1); console.log(v)'
+      - name: Build
+        run: bun run build
+      - name: Lint
+        run: bun run lint
