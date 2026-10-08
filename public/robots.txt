@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://happy-hues-hand.lovable.app/sitemap.xml
+Sitemap: https://qafritoursandtravels.africa/sitemap.xml

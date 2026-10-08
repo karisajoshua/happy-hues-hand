@@ -1,0 +1,41 @@
+name: Refresh patched Bun dependencies
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/qafri-production-seo
+    paths:
+      - package.json
+      - .github/workflows/refresh-bun-lock.yml
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/qafri-production-seo
+          persist-credentials: true
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Resolve and update lockfile
+        run: bun install
+      - name: Verify patched TanStack Start is installed
+        run: |
+          bun -e 'const v = require("@tanstack/react-start/package.json").version; const [major,minor,patch] = v.split(".").map(Number); if (major !== 1 || minor < 168 || (minor === 168 && patch < 60)) { console.error("Vulnerable TanStack Start version:",v); process.exit(1) }; console.log("Patched TanStack Start:",v)'
+      - name: Build application
+        run: bun run build
+      - name: Commit refreshed lockfile
+        run: |
+          if ! git diff --quiet -- bun.lock; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add bun.lock
+            git commit -m "fix(deps): refresh bun lockfile for patched TanStack Start"
+            git push origin HEAD:fix/qafri-production-seo
+          fi

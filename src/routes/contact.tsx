@@ -37,10 +37,6 @@ export const Route = createFileRoute("/contact")({
             addressCountry: "KE",
           },
           areaServed: "Africa",
-          sameAs: [
-            "https://www.instagram.com/qafri.tours",
-            "https://twitter.com/QafriTours",
-          ],
         }),
       },
     ],
