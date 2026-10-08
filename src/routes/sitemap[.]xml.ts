@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { SERVICES } from "@/lib/services";
 
 const BASE_URL = "https://qafritoursandtravels.africa";
 
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/safaris", changefreq: "weekly", priority: "0.9" },
           { path: "/services", changefreq: "monthly", priority: "0.8" },
           { path: "/contact", changefreq: "monthly", priority: "0.7" },
+          ...SERVICES.map((service) => ({ path: `/services/${service.slug}`, changefreq: "monthly" as const, priority: "0.7" })),
         ];
 
         const urls = entries.map((e) =>
